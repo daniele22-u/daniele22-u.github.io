@@ -1,14 +1,13 @@
 # Data Scientist
 
-#### Technical Skills: Python, SQL, AWS, Snowflake, MATLAB
+#### Technical Skills: Python _(PyTorch, TensorFlow, Stable Baselines3, D3RLpy, Scikit-learn, Keras, OpenAI Gym, NumPy, Pandas, Matplotlib, Seaborn)_, MATLAB, C, HTML/CSS, JavaScript, SQL
 
-## Education
-- Ph.D., Physics | The University of Texas at Dallas (_May 2022_)								       		
-- M.S., Physics	| The University of Texas at Dallas (_December 2019_)	 			        		
-- B.S., Physics | The University of Texas at Dallas (_May 2017_)
+## Education							       		
+- M.S., Information Bionengineering	| Politecnico di Milano (_Present_)	 			        		
+- B.S., Biomedical Engineering | Università di Pavia (_Sep. 2024_)
 
 ## Work Experience
-**Data Scientist @ Toyota Financial Services (_June 2022 - Present_)**
+**Capstone project @ SXT - Telemedicine Systems (_Sep. 2025 - Present_)**
 - Uncovered and corrected missing step in production data pipeline which impacted over 70% of active accounts
 - Redeveloped loan originations model which resulted in 50% improvement in model performance and saving 1 million dollars in potential losses
 
