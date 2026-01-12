@@ -10,18 +10,23 @@ Hi! I am a Biomedical Engineer passionate about the intersection of data science
   *Politecnico di Milano* | Sept. 2024 – Present  
 
 - **BSc in Biomedical Engineering**  
-  *University of Cagliari* | Sept. 2021 – Sept. 2024
+  *University of Cagliari* — 2021–2024  
+Graduation grade: **105**  
+Thesis: *The Influence of Virtual Reality on Human Balance*  
+Focus: VR-induced postural stability assessment using a pedobarometric platform, extracting COP-based spatio-temporal parameters and analyzing the data pipeline in MATLAB and Python across multiple VR perturbation scenarios
 
 ---
 
 ## 💼 Experience
 
 - **SXT S.r.l. – Telemedicine Systems** (Capstone Project)  
-  _Milan, Italy | Sept. 2025 – Present_  
+  _Milan, Italy | Sept. 2025 – Feb. 2026  
   Developed a algorithm (NDA).
 
-- **WIP** (Bachelor Thesis)  
-  
+- **Bachelor Thesis** (International Research Experience)
+  _Lodz, Poland | Feb 2024 - Jul. 2024
+Erasmus research experience at Lodz University of Technology (Politechnika Łódzka), Poland.
+Bachelor thesis carried out in the Mechanical Engineering laboratory, focused on VR-induced postural stability analysis.
 
 ---
 
@@ -47,9 +52,24 @@ Hi! I am a Biomedical Engineer passionate about the intersection of data science
 
 ## 🧑‍💻 Skills
 
-- **Languages:** Python, MATLAB, C, JavaScript, SQL, XML
-- **Libraries/Frameworks:** *PyTorch, TensorFlow, Stable Baselines3, D3RLpy, scikit-learn, NumPy, pandas, Matplotlib, Seaborn*
-- **Tools:** Visual Studio Code, Google Colab, GitHub, Jupyter Notebook, Docker, TensorBoard, Anaconda, Microsoft Teams
+## Technical Skills
+
+- **Programming & Data Analysis:** Python, MATLAB, C, SQL  
+- **Web & Markup:** HTML/CSS, JavaScript, XML  
+- **Machine Learning / AI:** PyTorch, TensorFlow, scikit-learn  
+- **Signal & Time-Series Processing:**  
+  MNE, SciPy, filtering, STFT, PSD, feature extraction, signal preprocessing  
+- **Biomechanics & Experimental Analysis:**  
+  Center of Pressure (COP) analysis, postural stability metrics, spatio-temporal parameter extraction, experimental data analysis, basic statistical analysis  
+- **VR & Experimental Setup:**  
+  Unity (VR environments), experimental protocol design, data acquisition from sensor platforms, human–computer interaction (basic)  
+- **Scientific Computing & Research:**  
+  time-series analysis, data cleaning and validation, reproducible experiments, scientific reporting  
+- **Development Tools:**  
+  VS Code, GitHub, Jupyter, Google Colab, Docker  
+- **Other:**  
+  CAD tools, data visualization, version control, international research collaboration
+
 
 ---
 
@@ -65,3 +85,9 @@ Hi! I am a Biomedical Engineer passionate about the intersection of data science
 - Student Representative at the Università di Cagliari
 - Student Representative at the Politecnico di Milano
 - Member of Svoltastudenti Association since 2025, the biggest Student Association in Italy
+
+## 📧 Contacts
+
+- mail: uras.daniele22@gmail.com
+- Github: https://github.com/daniele22-u
+- Linkedin: https://www.linkedin.com/in/daniele22-u/
