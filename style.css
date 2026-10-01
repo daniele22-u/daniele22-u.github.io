@@ -408,6 +408,16 @@ img { max-width: 100%; display: block; }
 .ch-featured h2 { font-size: clamp(30px, 3.6vw, 48px); }
 .ch p { margin: 0 0 10px; font-size: 17px; line-height: 1.5; }
 .ch-featured p { font-size: 20px; }
+.ch-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--fg);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 2px;
+  transition: color .2s, border-color .2s;
+}
+.ch-link:hover { color: var(--accent); border-color: var(--accent); }
 .ch-note { color: var(--accent); font-size: 10px !important; margin-top: 14px !important; }
 
 /* ============ SKILLS ============ */
