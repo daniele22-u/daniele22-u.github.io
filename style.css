@@ -519,3 +519,6 @@ img { max-width: 100%; display: block; }
   html { scroll-behavior: auto; }
   .about-card { opacity: 1; transform: none; }
 }
+
+.legal a { color: var(--fg); transition: color .2s; }
+.legal a:hover { color: var(--accent); }
