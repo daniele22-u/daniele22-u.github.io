@@ -302,6 +302,41 @@
       ctx.strokeStyle = colors.line;
       ctx.beginPath(); ctx.ellipse(cx, cy, rx * 1.08, ry * 1.12, 0, 0, 6.2832); ctx.stroke();
     },
+    // monitor di terapia intensiva: ECG + pletismografia + frequenza cardiaca
+    icu(ctx, w, h, t) {
+      const g = (x, mu, s) => Math.exp(-((x - mu) * (x - mu)) / (2 * s * s));
+      const ecg = (tau) => {
+        const p = ((tau % 0.82) + 0.82) % 0.82 / 0.82;
+        return 0.12 * g(p, 0.12, 0.025) - 0.12 * g(p, 0.21, 0.008) + 1.0 * g(p, 0.235, 0.010)
+             - 0.22 * g(p, 0.26, 0.010) + 0.25 * g(p, 0.45, 0.045);
+      };
+      const pleth = (tau) => {
+        const p = ((tau - 0.18) % 0.82 + 0.82) % 0.82 / 0.82;
+        return g(p, 0.25, 0.09) + 0.35 * g(p, 0.55, 0.07);
+      };
+      const lx = 64, span = 3;
+      const traces = [[ecg, h * 0.38, h * 0.28, colors.accent], [pleth, h * 0.82, h * 0.2, colors.trace]];
+      ctx.lineWidth = 1.2;
+      for (const [f, y0, a, col] of traces) {
+        ctx.strokeStyle = col;
+        ctx.beginPath();
+        for (let x = 0; x <= w - lx; x += 1.5) {
+          const tau = t - (w - lx - x) / (w - lx) * span;
+          const y = y0 - f(tau) * a;
+          x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.stroke();
+      }
+      ctx.lineWidth = 1;
+      ctx.fillStyle = colors['fg-dim'];
+      ctx.font = '9px "JetBrains Mono", monospace';
+      ctx.fillText('HR', w - lx + 12, 18);
+      ctx.fillText('SpO₂', w - lx + 12, h * 0.62);
+      ctx.fillStyle = colors.fg;
+      ctx.font = '18px "JetBrains Mono", monospace';
+      ctx.fillText(String(72 + Math.round(2 * Math.sin(t * 0.3))), w - lx + 12, 40);
+      ctx.fillText('98', w - lx + 12, h * 0.62 + 22);
+    },
     // segnale assente: blocchi “oscurati”
     nda(ctx, w, h, t) {
       ctx.strokeStyle = colors.trace;
