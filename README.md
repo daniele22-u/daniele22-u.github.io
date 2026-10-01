@@ -1,93 +1,36 @@
-# 🧬 Portfolio — Biomedical Data Science & Engineering
+# daniele22-u.github.io
 
-Hi! I am a Biomedical Engineer passionate about the intersection of data science, AI, and healthcare technology. Currently, I am pursuing my MSc in Information Bioengineering at Politecnico di Milano, after graduating from the University of Cagliari.
+Personal portfolio of **Daniele Uras**, biomedical engineer (EEG, signal processing, machine learning).
 
----
+**Live:** https://daniele22-u.github.io
 
-## 🎓 Education
+## Stack
 
-- **MSc in Biomedical Engineering** (Information Bioengineering)  
-  *Politecnico di Milano* | Sept. 2024 – Present  
+Plain HTML, CSS and JavaScript: no framework, no build step. GitHub Pages serves the files as they are (`.nojekyll` turns Jekyll off).
 
-- **BSc in Biomedical Engineering**  
-  *University of Cagliari* — 2021–2024  
-Graduation grade: **105**  
-Thesis: *The Influence of Virtual Reality on Human Balance*  
-Focus: VR-induced postural stability assessment using a pedobarometric platform, extracting COP-based spatio-temporal parameters and analyzing the data pipeline in MATLAB and Python across multiple VR perturbation scenarios
+```
+index.html            page content (English)
+i18n.js               Italian translations + EN/IT switch
+style.css             layout, themes (dark default, light toggle), responsive rules
+main.js               animations: EEG hero, ASCII portrait, project waveforms
+assets/
+  portrait.jpg        profile photo
+  favicon.svg
+  Daniele_Uras_CV.pdf
+```
 
----
+## Run locally
 
-## 💼 Experience
+```bash
+python3 -m http.server 8000
+# open http://localhost:8000
+```
 
-- **SXT S.r.l. – Telemedicine Systems** (Capstone Project)  
-  _Milan, Italy | Sept. 2025 – Feb. 2026  
-  Developed a algorithm (NDA).
+A local server is needed: if `index.html` is opened directly from disk, the browser blocks reading the photo pixels and the ASCII portrait falls back to the plain image.
 
-- **Bachelor Thesis** (International Research Experience)
-  _Lodz, Poland | Feb 2024 - Jul. 2024
-Erasmus research experience at Lodz University of Technology (Politechnika Łódzka), Poland.
-Bachelor thesis carried out in the Mechanical Engineering laboratory, focused on VR-induced postural stability analysis.
+## Editing
 
----
-
-## 🛠️ Projects
-
-- **Narcolepsy Events Monitoring System**  
-  _Python, SQL, XML | April 2025_  
-  - Developed a Python GUI-based system for monitoring and predicting narcolepsy events  
-  - Designed full workflows and data visualizations using XML and SQL  
-  - Conducted competitive analysis for device and clinical data management
-
-- **EEG Sleep Stage Analysis**  
-  _MATLAB | October 2024_  
-  - Created an automated pipeline to process and classify EEG sleep stages  
-  - Custom spectral feature extraction, stage classification, and transition analysis
-
-- **Brain Lesion Segmentation (MRI)**  
-  _MATLAB | December 2024_  
-  - Built and tested segmentation models for T1 MRI volumes  
-  - Validated with manual annotations and standard metrics (e.g., Dice coefficient)
-
----
-
-## 🧑‍💻 Skills
-
-## Technical Skills
-
-- **Programming & Data Analysis:** Python, MATLAB, C, SQL  
-- **Web & Markup:** HTML/CSS, JavaScript, XML  
-- **Machine Learning / AI:** PyTorch, TensorFlow, scikit-learn  
-- **Signal & Time-Series Processing:**  
-  MNE, SciPy, filtering, STFT, PSD, feature extraction, signal preprocessing  
-- **Biomechanics & Experimental Analysis:**  
-  Center of Pressure (COP) analysis, postural stability metrics, spatio-temporal parameter extraction, experimental data analysis, basic statistical analysis  
-- **VR & Experimental Setup:**  
-  Unity (VR environments), experimental protocol design, data acquisition from sensor platforms, human–computer interaction (basic)  
-- **Scientific Computing & Research:**  
-  time-series analysis, data cleaning and validation, reproducible experiments, scientific reporting  
-- **Development Tools:**  
-  VS Code, GitHub, Jupyter, Google Colab, Docker  
-- **Other:**  
-  CAD tools, data visualization, version control, international research collaboration
-
-
----
-
-## 🌍 Languages
-
-- **Italian:** Native
-- **English:** Fluent (C1)
-
----
-
-## 🌱 Extracurricular
-
-- Student Representative at the Università di Cagliari
-- Student Representative at the Politecnico di Milano
-- Member of Svoltastudenti Association since 2025, the biggest Student Association in Italy
-
-## 📧 Contacts
-
-- mail: uras.daniele22@gmail.com
-- Github: https://github.com/daniele22-u
-- Linkedin: https://www.linkedin.com/in/daniele22-u/
+- **Text:** edit `index.html` for English and the matching key in `i18n.js` for Italian. Elements with `data-i18n="key"` are translated.
+- **Projects:** each card in the *Work* section is an `<article class="ch" data-wave="…">`. `data-wave` picks the animation in `main.js` (`gnn`, `icu`, `nda`, `sleep`, `eeg`, `mri`, `cop`).
+- **CV:** replace `assets/Daniele_Uras_CV.pdf`, keeping the same name.
+- **Language:** `?lang=it` or `?lang=en` in the URL forces a language. Otherwise the site follows the last choice, then the browser language.
