@@ -46,6 +46,8 @@ window.I18N_IT = {
   'w.sleep.t': 'Analisi delle fasi del sonno da EEG',
   'w.sleep.b': 'Una pipeline automatica che classifica le fasi del sonno da EEG notturno, con estrazione di feature spettrali, validazione e analisi delle transizioni tra fasi.',
 
+  'w.code': 'Vedi il codice',
+
   'w.mri.l': 'IMAGING',
   'w.mri.t': 'Segmentazione di lesioni cerebrali (MRI)',
   'w.mri.b': 'Modelli di segmentazione per volumi di risonanza T1, validati rispetto ad annotazioni manuali con metriche di sovrapposizione come il coefficiente di Dice.',
