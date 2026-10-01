@@ -189,8 +189,8 @@
 
     const sample = () => {
       const S = fitCanvas(ascii);
-      cols = Math.round(S.w / 4.4);
-      rows = Math.round(cols * 1.5 * 0.55);
+      cols = Math.round(S.w / 3.6);
+      rows = Math.round(cols * (img.naturalHeight / img.naturalWidth) * 0.55);
       const off = document.createElement('canvas');
       off.width = cols; off.height = rows;
       const octx = off.getContext('2d', { willReadFrequently: true });
@@ -198,16 +198,12 @@
       const data = octx.getImageData(0, 0, cols, rows).data; // lancia se il canvas è “tainted”
       grid = new Float32Array(cols * rows);
       for (let k = 0; k < cols * rows; k++) {
-        const R = data[k * 4], G = data[k * 4 + 1], B = data[k * 4 + 2];
-        // la figura è blu/ciano su sfondo caldo: la cromaticità la separa meglio della luminanza
-        const chroma = Math.max(0, (B - R) / 255 + 0.5 * (G - R) / 255);
-        const lum = (0.299 * R + 0.587 * G + 0.114 * B) / 255;
-        grid[k] = 0.75 * chroma + 0.25 * lum * lum;
+        grid[k] = (0.299 * data[k * 4] + 0.587 * data[k * 4 + 1] + 0.114 * data[k * 4 + 2]) / 255;
       }
-      // stretch del contrasto sui percentili 2–98 per far emergere la figura
+      // stretch del contrasto: lo sfondo grigio e la giacca scura spariscono, restano viso e camicia
       const sorted = Array.from(grid).sort((a, b) => a - b);
-      const lo = sorted[Math.floor(sorted.length * 0.02)], hi = sorted[Math.floor(sorted.length * 0.98)];
-      for (let k = 0; k < grid.length; k++) grid[k] = Math.pow(Math.min(1, Math.max(0, (grid[k] - lo) / (hi - lo || 1))), 1.4);
+      const lo = sorted[Math.floor(sorted.length * 0.6)], hi = sorted[Math.floor(sorted.length * 0.995)];
+      for (let k = 0; k < grid.length; k++) grid[k] = Math.pow(Math.min(1, Math.max(0, (grid[k] - lo) / (hi - lo || 1))), 0.9);
       return S;
     };
 
@@ -218,11 +214,9 @@
       ctx.font = `${Math.ceil(chh * 1.05)}px "JetBrains Mono", monospace`;
       ctx.textBaseline = 'top';
       ctx.fillStyle = colors.fg;
-      const light = getComputedStyle(root).colorScheme === 'light';
       for (let y = 0; y < Math.min(rows, upto); y++) {
         for (let x = 0; x < cols; x++) {
-          let v = grid[y * cols + x];
-          if (light) v = 1 - v;
+          const v = grid[y * cols + x];
           const ch = RAMP[Math.min(RAMP.length - 1, Math.floor(v * RAMP.length))];
           if (ch !== ' ') ctx.fillText(ch, x * cw, y * chh);
         }
