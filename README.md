@@ -32,5 +32,6 @@ A local server is needed: if `index.html` is opened directly from disk, the brow
 
 - **Text:** edit `index.html` for English and the matching key in `i18n.js` for Italian. Elements with `data-i18n="key"` are translated.
 - **Projects:** each card in the *Work* section is an `<article class="ch" data-wave="…">`. `data-wave` picks the animation in `main.js` (`gnn`, `icu`, `nda`, `sleep`, `eeg`, `mri`, `cop`).
+- **Cache:** after changing `style.css`, `main.js` or `i18n.js`, bump the `?v=` number on their tags in `index.html`, otherwise browsers may mix the new page with old cached files.
 - **CV:** replace `assets/Daniele_Uras_CV.pdf`, keeping the same name.
 - **Language:** `?lang=it` or `?lang=en` in the URL forces a language. Otherwise the site follows the last choice, then the browser language.
