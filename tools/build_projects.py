@@ -54,6 +54,9 @@ PROJECTS = [
         lead=("An end-to-end pipeline that estimates in-hospital mortality from intensive-care vital signs, explains its predictions and turns them into a bedside dashboard.",
               "Una pipeline completa che stima la mortalità intra-ospedaliera dai parametri vitali in terapia intensiva, spiega le sue predizioni e le trasforma in una dashboard da reparto."),
         sections=[
+            ('My role', 'Il mio ruolo',
+             '<p>Code implementation, together with Gabriele Carta and Filippo Saccomano: the three of us wrote and tested the code side of the project.</p>',
+             '<p>Implementazione del codice, insieme a Gabriele Carta e Filippo Saccomano: abbiamo scritto e testato in tre la parte di codice del progetto.</p>'),
             ("Data", "Dati",
              "<p>A synthetic cohort inspired by MIMIC-III: <strong>500 ICU patients</strong>, 1,717 observations, 2–5 measurements per patient, 10 diagnoses. Mortality is <strong>12.6%</strong>, about one death for every seven survivors. With that imbalance, a model that predicts “survives” for everyone is 87% accurate and completely useless, so accuracy is the wrong metric from the start.</p>",
              "<p>Una coorte sintetica ispirata a MIMIC-III: <strong>500 pazienti</strong>, 1.717 osservazioni, 2–5 misure per paziente, 10 diagnosi. La mortalità è del <strong>12,6%</strong>, circa un decesso ogni sette sopravvissuti. Con questo sbilanciamento un modello che predice “sopravvive” per tutti è accurato all’87% e del tutto inutile: l’accuracy è la metrica sbagliata fin dall’inizio.</p>"),
@@ -67,12 +70,12 @@ PROJECTS = [
              "<p>The last task was a clinician-facing mock-up of a bedside risk monitor: a risk gauge against the alert threshold, live vital-sign trends and a “Why this alert” panel that turns SHAP values into short sentences (“oxygen saturation critically low”, “lactate climbing”). It runs in the browser; try the live version.</p>",
              "<p>L’ultimo task era un prototipo pensato per i clinici: un monitor del rischio da letto con un indicatore rispetto alla soglia di allerta, l’andamento dei parametri vitali e un pannello “Perché questo allarme” che trasforma i valori SHAP in frasi brevi (“saturazione criticamente bassa”, “lattato in aumento”). Funziona nel browser: prova la versione live.</p>"),
             ("Context", "Contesto",
-             "<p>Built on the course’s reference pipeline; our team extended it with five tasks: threshold calibration, a new variability feature, CNN architecture changes, subgroup analysis and the dashboard.</p>",
-             "<p>Il progetto parte dalla pipeline di riferimento del corso; il nostro team l’ha estesa con cinque task: calibrazione della soglia, una nuova feature di variabilità, modifiche all’architettura della CNN, analisi per sottogruppi e la dashboard.</p>"),
+             "<p>The project starts from the course’s reference pipeline. The instructor set five tasks as starting points for our own reasoning (threshold calibration, a new variability feature, CNN architecture changes, subgroup analysis and the dashboard); the choices, analyses and interpretations are ours.</p>",
+             "<p>Il progetto parte dalla pipeline di riferimento del corso. Il docente ha assegnato cinque task come punto di partenza per il nostro ragionamento (calibrazione della soglia, una nuova feature di variabilità, modifiche all’architettura della CNN, analisi per sottogruppi e la dashboard); scelte, analisi e interpretazioni sono nostre.</p>"),
         ],
     ),
     dict(
-        slug="marine-litter", wave="sea", ch="CH-03", label=("ENVIRONMENT", "AMBIENTE"),
+        slug="marine-litter", wave="sea", ch="CH-04", label=("ENVIRONMENT", "AMBIENTE"),
         title=("Marine litter hazard assessment — Sardinia", "Rischio da rifiuti marini — Sardegna"),
         meta=("Human Health & Environment · Data Science Laboratory · Politecnico di Milano · Apr – Jun 2026",
               "Human Health & Environment · Data Science Laboratory · Politecnico di Milano · apr – giu 2026"),
@@ -101,7 +104,7 @@ PROJECTS = [
         ],
     ),
     dict(
-        slug="telemedicine", wave="nda", ch="CH-04", label=("INDUSTRY", "AZIENDA"),
+        slug="telemedicine", wave="nda", ch="CH-03", label=("INDUSTRY", "AZIENDA"),
         title=("Telemedicine algorithm", "Algoritmo per la telemedicina"),
         meta=("Capstone project · SXT S.r.l. – Telemedicine Systems · Milan · Sept 2025 – Feb 2026",
               "Progetto capstone · SXT S.r.l. – Telemedicine Systems · Milano · set 2025 – feb 2026"),
@@ -110,28 +113,34 @@ PROJECTS = [
         lead=("A capstone project with a company that builds telemedicine systems: I designed and developed an algorithm for their platform.",
               "Un progetto capstone con un’azienda che sviluppa sistemi di telemedicina: ho progettato e sviluppato un algoritmo per la loro piattaforma."),
         sections=[
+            ('My role', 'Il mio ruolo',
+             '<p>Code implementation, together with Gabriele Carta and Filippo Saccomano: the three of us wrote and tested the code side of the project.</p>',
+             '<p>Implementazione del codice, insieme a Gabriele Carta e Filippo Saccomano: abbiamo scritto e testato in tre la parte di codice del progetto.</p>'),
             ("Under NDA", "Coperto da NDA",
              "<p>The project is covered by a non-disclosure agreement, so I can’t share the problem, the data or the method. Happy to talk about the way of working in an interview, within what the agreement allows.</p>",
              "<p>Il progetto è coperto da un accordo di riservatezza, quindi non posso descrivere il problema, i dati o il metodo. Posso parlare del modo di lavorare durante un colloquio, nei limiti di quanto l’accordo consente.</p>"),
         ],
     ),
     dict(
-        slug="narcolepsy", wave="sleep", ch="CH-05", label=("CLINICAL SW", "SOFTWARE CLINICO"),
+        slug="narcolepsy", wave="sleep", ch="CH-06", label=("CLINICAL SW", "SOFTWARE CLINICO"),
         title=("Narcolepsy event monitoring", "Monitoraggio degli eventi di narcolessia"),
         meta=("Course project · Politecnico di Milano · Apr – Jun 2025",
               "Progetto di corso · Politecnico di Milano · apr – giu 2025"),
         stack="Python · SQL · XML",
         team=TEAM_GF, links=[],
-        lead=("A desktop application to monitor and predict narcolepsy events, with the data workflows behind it.",
-              "Un’applicazione desktop per monitorare e predire gli eventi di narcolessia, con i flussi di dati che la sostengono."),
+        lead=("A desktop application that monitors respiration, heart rate and RR signals to predict narcolepsy events, with the data workflows behind it.",
+              "Un’applicazione desktop che monitora respiro, frequenza cardiaca e segnali RR per predire gli eventi di narcolessia, con i flussi di dati che la sostengono."),
         sections=[
+            ('My role', 'Il mio ruolo',
+             '<p>Code implementation, together with Gabriele Carta and Filippo Saccomano: the three of us wrote and tested the code side of the project.</p>',
+             '<p>Implementazione del codice, insieme a Gabriele Carta e Filippo Saccomano: abbiamo scritto e testato in tre la parte di codice del progetto.</p>'),
             ("What we built", "Cosa abbiamo realizzato",
-             "<ul><li>A Python application with a graphical interface to record, monitor and predict narcolepsy events.</li><li>Structured data workflows, with XML for data exchange and an SQL database for storage, plus visualisations of the recorded events.</li><li>A competitive analysis of existing devices and clinical data-management solutions.</li></ul>",
-             "<ul><li>Un’applicazione Python con interfaccia grafica per registrare, monitorare e predire gli eventi di narcolessia.</li><li>Flussi di dati strutturati, con XML per lo scambio e un database SQL per l’archiviazione, più visualizzazioni degli eventi registrati.</li><li>Un’analisi competitiva dei dispositivi e delle soluzioni di gestione dei dati clinici esistenti.</li></ul>"),
+             "<ul><li>A Python application with a graphical interface to record, monitor and predict narcolepsy events from physiological signals: respiration, heart rate (HR) and RR.</li><li>Structured data workflows, with XML for data exchange and an SQL database for storage, plus visualisations of the recorded events.</li><li>A competitive analysis of existing devices and clinical data-management solutions.</li></ul>",
+             "<ul><li>Un’applicazione Python con interfaccia grafica per registrare, monitorare e predire gli eventi di narcolessia a partire da segnali fisiologici: respiro, frequenza cardiaca (HR) e RR.</li><li>Flussi di dati strutturati, con XML per lo scambio e un database SQL per l’archiviazione, più visualizzazioni degli eventi registrati.</li><li>Un’analisi competitiva dei dispositivi e delle soluzioni di gestione dei dati clinici esistenti.</li></ul>"),
         ],
     ),
     dict(
-        slug="sleep-staging", wave="eeg", ch="CH-06", label=("EEG", "EEG"),
+        slug="sleep-staging", wave="eeg", ch="CH-08", label=("EEG", "EEG"),
         title=("EEG sleep stage analysis", "Analisi delle fasi del sonno da EEG"),
         meta=("Signal Processing and Medical Images course · Politecnico di Milano · Oct 2024 – Jan 2025",
               "Corso Signal Processing and Medical Images · Politecnico di Milano · ott 2024 – gen 2025"),
@@ -141,6 +150,9 @@ PROJECTS = [
         lead=("An automated pipeline that reads an overnight EEG and produces a hypnogram: the sequence of wake, REM and non-REM sleep across the night.",
               "Una pipeline automatica che legge un EEG notturno e produce un ipnogramma: la sequenza di veglia, sonno REM e non-REM durante la notte."),
         sections=[
+            ('My role', 'Il mio ruolo',
+             '<p>Code implementation, together with Gabriele Carta and Filippo Saccomano: the three of us wrote and tested the code side of the project.</p>',
+             '<p>Implementazione del codice, insieme a Gabriele Carta e Filippo Saccomano: abbiamo scritto e testato in tre la parte di codice del progetto.</p>'),
             ("Pipeline", "Pipeline",
              "<ol><li><strong>Cleaning:</strong> a double notch filter removes narrow-band noise at 1 and 2 Hz.</li><li><strong>Epochs:</strong> the signal is split into the standard 30-second scoring windows.</li><li><strong>Spectra:</strong> power spectral density with Welch’s method, then absolute and relative power in the delta, theta, alpha, beta and gamma bands.</li><li><strong>Complexity:</strong> sample entropy and approximate entropy for every epoch.</li><li><strong>Staging:</strong> rule-based classification into wake, REM and NREM from the band-power ratios, with smoothing that removes implausibly short stage changes.</li><li><strong>Output:</strong> the hypnogram, overlaid with entropy, plus the intermediate spectra and filter responses.</li></ol>",
              "<ol><li><strong>Pulizia:</strong> un doppio filtro notch elimina il rumore a banda stretta a 1 e 2 Hz.</li><li><strong>Epoche:</strong> il segnale viene diviso nelle finestre standard di 30 secondi.</li><li><strong>Spettri:</strong> densità spettrale di potenza con il metodo di Welch, poi potenza assoluta e relativa nelle bande delta, theta, alfa, beta e gamma.</li><li><strong>Complessità:</strong> sample entropy e approximate entropy per ogni epoca.</li><li><strong>Stadiazione:</strong> classificazione a regole in veglia, REM e NREM a partire dai rapporti di potenza, con uno smoothing che elimina cambi di fase troppo brevi per essere plausibili.</li><li><strong>Risultato:</strong> l’ipnogramma con l’entropia sovrapposta, più spettri intermedi e risposte dei filtri.</li></ol>"),
@@ -160,13 +172,16 @@ PROJECTS = [
         lead=("Finding and measuring a brain lesion in a T1-weighted MRI volume, slice by slice, and checking how much to trust the result.",
               "Trovare e misurare una lesione cerebrale in un volume di risonanza T1, sezione per sezione, e verificare quanto fidarsi del risultato."),
         sections=[
+            ('My role', 'Il mio ruolo',
+             '<p>Code implementation, together with Gabriele Carta and Filippo Saccomano: the three of us wrote and tested the code side of the project.</p>',
+             '<p>Implementazione del codice, insieme a Gabriele Carta e Filippo Saccomano: abbiamo scritto e testato in tre la parte di codice del progetto.</p>'),
             ("Pipeline", "Pipeline",
              "<ol><li><strong>Segmentation</strong> in both the axial and the sagittal plane: intensity thresholds inside a region of interest, morphological opening and closing, and selection of the largest connected component.</li><li><strong>Volume:</strong> lesion area per slice, summed into a volume in voxels, mm³ and cm³.</li><li><strong>Missing slices:</strong> polynomial regression estimates the lesion area in slices where it was not detected.</li><li><strong>Validation:</strong> Dice coefficient against a manual segmentation.</li><li><strong>Robustness:</strong> the same pipeline re-run with Gaussian, salt-and-pepper and speckle noise.</li><li><strong>Visualisation:</strong> interactive 3D rendering of the segmented lesion.</li></ol>",
              "<ol><li><strong>Segmentazione</strong> sia sul piano assiale sia su quello sagittale: soglie di intensità dentro una regione di interesse, apertura e chiusura morfologica e scelta della componente connessa più grande.</li><li><strong>Volume:</strong> area della lesione per sezione, sommata in un volume in voxel, mm³ e cm³.</li><li><strong>Sezioni mancanti:</strong> una regressione polinomiale stima l’area della lesione dove non era stata rilevata.</li><li><strong>Validazione:</strong> coefficiente di Dice rispetto a una segmentazione manuale.</li><li><strong>Robustezza:</strong> la stessa pipeline ripetuta con rumore gaussiano, sale e pepe e speckle.</li><li><strong>Visualizzazione:</strong> rendering 3D interattivo della lesione segmentata.</li></ol>"),
         ],
     ),
     dict(
-        slug="vr-balance", wave="cop", ch="CH-08", label=("BIOMECHANICS", "BIOMECCANICA"),
+        slug="vr-balance", wave="cop", ch="CH-05", label=("BIOMECHANICS", "BIOMECCANICA"),
         title=("Virtual reality & human balance", "Realtà virtuale & equilibrio"),
         meta=("Bachelor’s thesis · Erasmus at Łódź University of Technology · Feb – Jul 2024",
               "Tesi triennale · Erasmus alla Łódź University of Technology · feb – lug 2024"),
@@ -179,8 +194,8 @@ PROJECTS = [
              "<p>Participants stood on a pressure (pedobarometric) platform while virtual-reality scenes introduced different visual perturbations. The platform records where body weight falls on the feet over time, the <em>centre of pressure</em>, which is a standard window on postural control.</p>",
              "<p>I partecipanti stavano in piedi su una pedana di pressione (pedobarometrica) mentre scene in realtà virtuale introducevano diverse perturbazioni visive. La pedana registra nel tempo dove cade il peso del corpo sui piedi, il <em>centro di pressione</em>, una finestra standard sul controllo posturale.</p>"),
             ("My work", "Il mio lavoro",
-             "<ul><li>Designed the experimental protocol.</li><li>Built the analysis pipeline in MATLAB and Python, extracting spatio-temporal centre-of-pressure parameters for each scenario.</li><li>Worked in the mechanical engineering laboratory of an international university, in English.</li></ul>",
-             "<ul><li>Ho progettato il protocollo sperimentale.</li><li>Ho costruito la pipeline di analisi in MATLAB e Python, estraendo i parametri spazio-temporali del centro di pressione per ogni scenario.</li><li>Ho lavorato nel laboratorio di ingegneria meccanica di un’università internazionale, in inglese.</li></ul>"),
+             "<ul><li>Designed the experimental protocol.</li><li>Built the analysis pipeline in MATLAB and Python, extracting triaxial acceleration, velocity and skewness parameters from the pressure-platform recordings for each scenario.</li><li>Worked in the mechanical engineering laboratory of an international university, in English.</li></ul>",
+             "<ul><li>Ho progettato il protocollo sperimentale.</li><li>Ho costruito la pipeline di analisi in MATLAB e Python, estraendo per ogni scenario parametri triassiali di accelerazione, velocità e skewness dalle registrazioni della pedana di pressione.</li><li>Ho lavorato nel laboratorio di ingegneria meccanica di un’università internazionale, in inglese.</li></ul>"),
         ],
     ),
 ]
@@ -283,7 +298,11 @@ def page(p, prev_p, next_p):
 '''
 
 
+ORDER = ['thesis', 'icu', 'telemedicine', 'marine-litter', 'vr-balance', 'narcolepsy', 'brain-lesion-segmentation', 'sleep-staging']
+
+
 def main():
+    PROJECTS.sort(key=lambda p: ORDER.index(p['slug']))
     OUT.mkdir(exist_ok=True)
     n = len(PROJECTS)
     for i, p in enumerate(PROJECTS):

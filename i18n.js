@@ -44,7 +44,7 @@ window.I18N_IT = {
 
   'w.narco.l': 'SOFTWARE CLINICO',
   'w.narco.t': 'Monitoraggio degli eventi di narcolessia',
-  'w.narco.b': 'Un’applicazione Python con interfaccia grafica per monitorare e predire gli eventi di narcolessia, con flussi di dati strutturati e visualizzazioni.',
+  'w.narco.b': 'Un’applicazione Python con interfaccia grafica per monitorare e predire gli eventi di narcolessia a partire da respiro, frequenza cardiaca e segnali RR, con flussi di dati strutturati e visualizzazioni.',
 
   'w.sleep.l': 'EEG',
   'w.sleep.t': 'Analisi delle fasi del sonno da EEG',
@@ -61,7 +61,7 @@ window.I18N_IT = {
 
   'w.vr.l': 'BIOMECCANICA',
   'w.vr.t': 'Realtà virtuale &amp; equilibrio',
-  'w.vr.b': 'Tesi triennale, svolta in Erasmus alla Łódź University of Technology. Ho progettato il protocollo e analizzato come le perturbazioni in realtà virtuale influenzano la postura, con una pedana di pressione e i parametri del centro di pressione.',
+  'w.vr.b': 'Tesi triennale, svolta in Erasmus alla Łódź University of Technology. Ho progettato il protocollo e analizzato come le perturbazioni in realtà virtuale influenzano la postura, a partire da accelerazione, velocità e skewness triassiali misurate su una pedana di pressione.',
 
   'skills.sub': 'competenze',
   'skills.code': 'Programmazione',
