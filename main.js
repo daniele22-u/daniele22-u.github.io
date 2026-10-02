@@ -500,6 +500,31 @@
       ctx.fillText(String(72 + Math.round(2 * Math.sin(t * 0.3))), w - lx + 12, 40);
       ctx.fillText('98', w - lx + 12, h * 0.62 + 22);
     },
+    // mare: correnti stratificate e rifiuti che galleggiano alla deriva
+    sea(ctx, w, h, t) {
+      ctx.lineWidth = 1;
+      for (let k = 0; k < 5; k++) {
+        const y0 = h * (0.3 + k * 0.14), a = 5 - k * 0.6, f = 0.012 + k * 0.004;
+        ctx.strokeStyle = colors.trace;
+        ctx.globalAlpha = 0.9 - k * 0.15;
+        ctx.beginPath();
+        for (let x = 0; x <= w; x += 3) {
+          const y = y0 + a * Math.sin(x * f + t * (0.8 - k * 0.1) + k) + 2 * Math.sin(x * f * 2.7 - t * 1.3 + k * 2);
+          x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      const r = rng(9);
+      for (let k = 0; k < 26; k++) {
+        const sp = 8 + r() * 18, x = ((r() * w + t * sp) % (w + 20)) - 10;
+        const lane = 0.3 + Math.floor(r() * 5) * 0.14;
+        const y = h * lane + 6 * Math.sin(x * 0.02 + t + k) - 3;
+        const s = 1.5 + r() * 2.5;
+        ctx.fillStyle = r() > 0.82 ? colors.accent : colors.fg;
+        ctx.fillRect(x, y, s, s);
+      }
+    },
     // segnale assente: blocchi “oscurati”
     nda(ctx, w, h, t) {
       ctx.strokeStyle = colors.trace;
