@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /staging/
 
 Sitemap: https://daniele22-u.github.io/sitemap.xml
