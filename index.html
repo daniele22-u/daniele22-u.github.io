@@ -55,7 +55,7 @@
   <link rel="preload" href="assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=202610021630">
+  <link rel="stylesheet" href="style.css?v=202610021658">
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -91,7 +91,7 @@
     <button class="cell theme-toggle" type="button" aria-label="Toggle light / dark theme">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/></svg>
     </button>
-    <button class="cell lang-toggle mono" type="button" aria-label="Switch language / Cambia lingua"><span data-lang="en">EN</span><span data-lang="it">IT</span></button>
+    <button class="cell lang-toggle mono" type="button"><span data-lang="en">EN</span> <span data-lang="it">IT</span><span class="sr-only"> — switch language / cambia lingua</span></button>
     <div class="cell status mono">
       <span data-i18n="status.role">Biomedical engineer · Milan, IT</span>
       <a href="#contact"><span data-i18n="status.avail">Available from Nov 2026</span> <span class="arrow">→</span> <b data-i18n="status.cta">Get in touch</b></a>
@@ -371,7 +371,7 @@
 
   <!-- statistiche anonime, senza cookie (GoatCounter) -->
   <script data-goatcounter="https://daniele-u22.goatcounter.com/count" async src="assets/js/count.js"></script>
-  <script src="i18n.js?v=202610021630"></script>
-  <script src="main.js?v=202610021630"></script>
+  <script defer src="i18n.js?v=202610021658"></script>
+  <script defer src="main.js?v=202610021658"></script>
 </body>
 </html>

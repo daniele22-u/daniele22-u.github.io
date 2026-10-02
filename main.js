@@ -328,6 +328,7 @@
         b.style.setProperty('--w', X(t1) - X(t0));
         b.style.setProperty('--row', row);
         b.dataset.i = i;
+        b.setAttribute('aria-label', li.querySelector('h3').textContent);
         lane.el.appendChild(b);
         bands[i] = b;
       }
@@ -338,6 +339,7 @@
         m.style.setProperty('--x', X(t0));
         m.dataset.i = i;
         m.dataset.t = t0;
+        m.setAttribute('aria-label', li.dataset.marker + ' — ' + li.querySelector('h3').textContent);
         m.innerHTML = `<span class="mk-n">${li.dataset.marker}</span>`;
         markersBox.appendChild(m);
         marks[i] = m;
@@ -370,7 +372,7 @@
       bands.forEach((b, i) => b && b.classList.toggle('on', i === selected));
       marks.forEach((m, i) => m && m.classList.toggle('on', i === selected));
     };
-    const select = (i) => { if (i === selected) return; selected = i; renderDetail(); drawTrace(); };
+    const select = (i) => { if (i === selected) return; selected = i; renderDetail(); if (laidOut) drawTrace(); };
     tl.addEventListener('click', (e) => {
       const el = e.target.closest('.tl-bar, .mk');
       if (el) select(+el.dataset.i);
@@ -381,13 +383,20 @@
         if (el) select(+el.dataset.i);
       });
     }
-    window.addEventListener('langchange', renderDetail);
+    window.addEventListener('langchange', () => {
+      renderDetail();
+      items.forEach((li, i) => {
+        const t = li.querySelector('h3').textContent;
+        if (bands[i]) bands[i].setAttribute('aria-label', t);
+        if (marks[i]) marks[i].setAttribute('aria-label', li.dataset.marker + ' — ' + t);
+      });
+    });
 
     // traccia: EEG di fondo + risposta evocata su ogni marker
     const cv = tl.querySelector('.tl-trace');
     const sig = makeChannel(77);
     const g = (x, mu, s) => Math.exp(-((x - mu) * (x - mu)) / (2 * s * s));
-    let S = fitCanvas(cv), progress = reduceMotion ? 1 : 0;
+    let S = null, progress = reduceMotion ? 1 : 0;
     const markerXs = () => marks.map((m, i) => m ? { i, x: parseFloat(m.style.getPropertyValue('--x')) * S.w } : null).filter(Boolean);
     const yAt = (x, mx, base, amp) => {
       let v = sig(x / 18) * 0.28;
@@ -398,6 +407,7 @@
       return base - v * amp;
     };
     function drawTrace() {
+      if (!S) S = fitCanvas(cv);
       const { ctx, w, h } = S;
       ctx.clearRect(0, 0, w, h);
       const mx = markerXs();
@@ -424,16 +434,24 @@
       marks.forEach(m => { if (m) m.classList.toggle('shown', parseFloat(m.style.getPropertyValue('--x')) * w <= end + 2); });
     }
 
-    layoutMarkers();
     renderDetail();
-    drawTrace();
-    // su schermi stretti la timeline scorre: parto dagli eventi più recenti
-    const sc = document.querySelector('.tl-scroll');
-    if (sc) sc.scrollLeft = sc.scrollWidth;
+    // misure e primo disegno solo quando la timeline si avvicina allo schermo
+    let laidOut = false;
+    const layoutOnce = () => {
+      if (laidOut) return;
+      laidOut = true;
+      layoutMarkers();
+      drawTrace();
+      // su schermi stretti la timeline scorre: parto dagli eventi più recenti
+      const sc = document.querySelector('.tl-scroll');
+      if (sc) sc.scrollLeft = sc.scrollWidth;
+    };
+    new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { obs.disconnect(); layoutOnce(); } }, { rootMargin: '400px' }).observe(tl);
     if (!reduceMotion) {
       new IntersectionObserver(([e], obs) => {
         if (!e.isIntersecting) return;
         obs.disconnect();
+        layoutOnce();
         const t1 = performance.now();
         const step = (t) => {
           progress = Math.min(1, (t - t1) / 2600);
@@ -443,8 +461,8 @@
         requestAnimationFrame(step);
       }, { threshold: 0.35 }).observe(tl);
     }
-    window.addEventListener('resize', () => { S = fitCanvas(cv); layoutMarkers(); drawTrace(); });
-    themeListeners.push(drawTrace);
+    window.addEventListener('resize', () => { if (!laidOut) return; S = null; layoutMarkers(); drawTrace(); });
+    themeListeners.push(() => { if (laidOut) drawTrace(); });
   }
 
   /* ---------- WORK: forme d'onda dei canali ---------- */
@@ -632,10 +650,10 @@
     const cv = ch.querySelector('.ch-wave');
     const fn = WAVES[ch.dataset.wave];
     if (!cv || !fn) return;
-    let S = fitCanvas(cv);
-    const draw = (t) => { S.ctx.clearRect(0, 0, S.w, S.h); fn(S.ctx, S.w, S.h, t); };
+    let S = null;   // dimensionato solo quando la card entra nello schermo (evita reflow all'avvio)
+    const draw = (t) => { if (!S) S = fitCanvas(cv); S.ctx.clearRect(0, 0, S.w, S.h); fn(S.ctx, S.w, S.h, t); };
     const redraw = animateWhenVisible(cv, draw);
-    window.addEventListener('resize', () => { S = fitCanvas(cv); redraw(); });
+    window.addEventListener('resize', () => { S = null; redraw(); });
     themeListeners.push(redraw);
 
     // leggera inclinazione 3D al passaggio del mouse
