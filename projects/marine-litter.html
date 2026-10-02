@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Marine litter hazard assessment — Sardinia — Daniele Uras</title>
+  <meta name="description" content="Six years of official monitoring data on marine litter, turned into a single spatial hazard index for the Sardinian coast and an interactive map anyone can explore.">
+  <link rel="canonical" href="https://daniele22-u.github.io/projects/marine-litter.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Marine litter hazard assessment — Sardinia — Daniele Uras">
+  <meta property="og:description" content="Six years of official monitoring data on marine litter, turned into a single spatial hazard index for the Sardinian coast and an interactive map anyone can explore.">
+  <meta property="og:image" content="https://daniele22-u.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/instrument-serif-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../style.css?v=202610021801">
+  <script>
+    (function () {
+      var d = document.documentElement, l = 'en';
+      try { var t = localStorage.getItem('theme'); if (t) d.dataset.theme = t; var s = localStorage.getItem('lang'); if (s === 'it' || s === 'en') l = s; else if ((navigator.language || '').toLowerCase().indexOf('it') === 0) l = 'it'; } catch (e) {}
+      var q = new URLSearchParams(location.search).get('lang'); if (q === 'it' || q === 'en') l = q;
+      d.lang = l; d.dataset.lang = l;
+    })();
+  </script>
+</head>
+<body class="pj-page">
+  <header class="pj-bar">
+    <a class="pj-back mono" href="../#work">← <span lang="en">All projects</span><span lang="it">Tutti i progetti</span></a>
+    <span class="pj-ch mono">CH-03 // <span lang="en">ENVIRONMENT</span><span lang="it">AMBIENTE</span></span>
+    <span class="pj-tools">
+      <button class="pj-lang mono" type="button"><span class="l-en">EN</span> <span class="l-it">IT</span><span class="sr-only"> — switch language / cambia lingua</span></button>
+      <button class="theme-toggle pj-theme" type="button" aria-label="Toggle light / dark theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/></svg></button>
+    </span>
+  </header>
+
+  <main class="pj">
+    <canvas class="wave-hero" data-wave="sea" aria-hidden="true"></canvas>
+    <div class="pj-head">
+      <p class="pj-meta mono"><span lang="en">Human Health &amp; Environment · Data Science Laboratory · Politecnico di Milano · Apr – Jun 2026</span><span lang="it">Human Health &amp; Environment · Data Science Laboratory · Politecnico di Milano · apr – giu 2026</span></p>
+      <h1><span lang="en">Marine litter hazard assessment — Sardinia</span><span lang="it">Rischio da rifiuti marini — Sardegna</span></h1>
+      <p class="pj-lead"><span lang="en">Six years of official monitoring data on marine litter, turned into a single spatial hazard index for the Sardinian coast and an interactive map anyone can explore.</span><span lang="it">Sei anni di dati ufficiali di monitoraggio sui rifiuti marini, trasformati in un unico indice spaziale di rischio per la costa sarda e in una mappa interattiva che chiunque può esplorare.</span></p>
+      <p class="pj-meta mono">Python · pandas · GeoPandas · SciPy · React · Leaflet · Recharts</p>
+      <p class="pj-team mono"><span lang="en">with</span><span lang="it">con</span> <a href="https://www.linkedin.com/in/filippo-saccomano-3503342ba/" target="_blank" rel="noopener">Filippo Saccomano</a></p>
+      <div class="pj-links"><a class="pj-btn mono" href="https://github.com/daniele22-u/hhe-labsardinia" target="_blank" rel="noopener" data-goatcounter-click="pj-code-hhe"><span lang="en">View code</span><span lang="it">Vedi il codice</span> ↗</a><a class="pj-btn mono" href="https://daniele22-u.github.io/hhe-labsardinia/" target="_blank" rel="noopener" data-goatcounter-click="pj-demo-hhe"><span lang="en">Live dashboard</span><span lang="it">Dashboard live</span> ↗</a></div>
+    </div>
+    <section class="pj-sec"><h2 class="mono">// <span lang="en">Data</span><span lang="it">Dati</span></h2><div lang="en"><p>ISPRA monitoring under the EU Marine Strategy Framework Directive (Descriptor 10), 2018–2023: beach litter surveys, floating litter transects, microplastics, seafloor sediments, and ingestion and entanglement in marine animals. The modules come as separate spreadsheets with different schemas, and the litter category codes changed in 2022 (G-codes became J-codes for the same items).</p></div><div lang="it"><p>Monitoraggi ISPRA nell’ambito della Direttiva quadro sulla strategia marina (Descrittore 10), 2018–2023: rifiuti spiaggiati, rifiuti galleggianti, microplastiche, sedimenti dei fondali, ingestione e intrappolamento negli animali marini. I moduli arrivano come fogli di calcolo separati con schemi diversi, e nel 2022 sono cambiati i codici delle categorie (i codici G sono diventati J per gli stessi oggetti).</p></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">Approach</span><span lang="it">Approccio</span></h2><div lang="en"><ol><li><strong>Cleaning and harmonisation</strong> of all modules into one consistent dataset, mapping old and new category codes.</li><li><strong>Spatial hazard index:</strong> beach, plastic, current and biological signals interpolated on a coastal grid and combined with weights the user can change, then aggregated to the 126 coastal municipalities.</li><li><strong>Statistics:</strong> Global Moran’s I and LISA to test whether hotspots are real clusters, plus the role of tourism, sea currents and the 2020 COVID drop.</li><li><strong>One source of truth:</strong> the pipeline writes a single JSON file that feeds figures, dashboard and report, so nothing drifts between team members.</li></ol></div><div lang="it"><ol><li><strong>Pulizia e armonizzazione</strong> di tutti i moduli in un unico dataset coerente, con la mappatura tra vecchi e nuovi codici.</li><li><strong>Indice spaziale di rischio:</strong> segnali di spiaggia, plastica, correnti e biologici interpolati su una griglia costiera e combinati con pesi modificabili dall’utente, poi aggregati sui 126 comuni costieri.</li><li><strong>Statistica:</strong> Moran’s I globale e LISA per verificare se i punti critici sono cluster reali, più il ruolo di turismo, correnti e del calo del 2020 dovuto al COVID.</li><li><strong>Un’unica fonte di verità:</strong> la pipeline scrive un solo file JSON che alimenta grafici, dashboard e report, così niente diverge tra i membri del team.</li></ol></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">What we found</span><span lang="it">Cosa abbiamo trovato</span></h2><div lang="en"><ul><li>A persistent <strong>west-coast hazard corridor</strong> (Alghero–Oristano), in every compartment and every year; the east coast stays low.</li><li>The clustering is statistically significant every year (Global Moran’s I ≈ 0.95, p &lt; 0.001).</li><li>In 2020 beach litter fell by about <strong>68%</strong> with tourism while currents stayed the same, but it never returned to pre-2020 levels: part of the problem is accumulated litter, not just visitors.</li><li>The link between tourism and litter was weak or negative, a useful “negative” result: measures aimed only at visitors would not be enough.</li></ul></div><div lang="it"><ul><li>Un <strong>corridoio di rischio sulla costa ovest</strong> (Alghero–Oristano) stabile in ogni comparto e in ogni anno; la costa est resta bassa.</li><li>Il clustering è statisticamente significativo ogni anno (Moran’s I globale ≈ 0,95, p &lt; 0,001).</li><li>Nel 2020 i rifiuti spiaggiati sono calati di circa il <strong>68%</strong> insieme al turismo mentre le correnti restavano uguali, ma non sono più tornati ai livelli pre-2020: parte del problema è il rifiuto accumulato, non solo i visitatori.</li><li>Il legame tra turismo e rifiuti è risultato debole o negativo, un risultato “negativo” utile: misure rivolte solo ai visitatori non basterebbero.</li></ul></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">The dashboard</span><span lang="it">La dashboard</span></h2><div lang="en"><p>A React + Leaflet map with a year slider, compartment tabs, sea-current arrows, coastal segments, the LISA overlay, adjustable weights, a guided tour and an Italian/English switch. Filippo Saccomano and I led its development.</p></div><div lang="it"><p>Una mappa React + Leaflet con slider degli anni, schede per comparto, frecce delle correnti, segmenti costieri, overlay LISA, pesi regolabili, un tour guidato e il cambio italiano/inglese. Filippo Saccomano e io ne abbiamo guidato lo sviluppo.</p></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">Team</span><span lang="it">Team</span></h2><div lang="en"><p>Five-person lab project: Daniele Uras, Filippo Saccomano, Tommaso Nesa, Tommaso Del Vecchio, Viola Guazzoni.</p></div><div lang="it"><p>Progetto di laboratorio in cinque: Daniele Uras, Filippo Saccomano, Tommaso Nesa, Tommaso Del Vecchio, Viola Guazzoni.</p></div></section>
+    <nav class="pj-nav" aria-label="More projects"><a class="pj-nav-prev" href="icu.html"><span class="mono">← CH-02</span><span lang="en">ICU mortality prediction</span><span lang="it">Predizione della mortalità in terapia intensiva</span></a><a class="pj-nav-next" href="telemedicine.html"><span class="mono">CH-04 →</span><span lang="en">Telemedicine algorithm</span><span lang="it">Algoritmo per la telemedicina</span></a></nav>
+  </main>
+
+  <footer class="legal mono pj-foot"><span>© 2026 Daniele Uras · <a href="../privacy.html">Privacy</a></span><a href="../">daniele22-u.github.io</a></footer>
+
+  <script>
+    document.querySelector('.pj-lang').addEventListener('click', function () {
+      var d = document.documentElement, l = d.dataset.lang === 'it' ? 'en' : 'it';
+      d.lang = l; d.dataset.lang = l;
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  </script>
+  <script defer src="../main.js?v=202610021801"></script>
+  <script data-goatcounter="https://daniele-u22.goatcounter.com/count" async src="../assets/js/count.js"></script>
+</body>
+</html>

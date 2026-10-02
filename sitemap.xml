@@ -7,6 +7,46 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://daniele22-u.github.io/projects/thesis.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://daniele22-u.github.io/projects/icu.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://daniele22-u.github.io/projects/marine-litter.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://daniele22-u.github.io/projects/telemedicine.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://daniele22-u.github.io/projects/narcolepsy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://daniele22-u.github.io/projects/sleep-staging.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://daniele22-u.github.io/projects/brain-lesion-segmentation.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://daniele22-u.github.io/projects/vr-balance.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://daniele22-u.github.io/privacy.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>

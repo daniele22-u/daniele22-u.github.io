@@ -18,7 +18,7 @@
   const themeListeners = [];
 
   /* ---------- tema ---------- */
-  document.querySelector('.theme-toggle').addEventListener('click', () => {
+  document.querySelector('.theme-toggle')?.addEventListener('click', () => {
     const isLight = getComputedStyle(root).colorScheme === 'light';
     const next = isLight ? 'dark' : 'light';
     root.dataset.theme = next;
@@ -469,20 +469,24 @@
   const sleepSig = makeChannel(11);
   const WAVES = {
     // grafo di elettrodi che si ricollega nel tempo, sopra qualche traccia
+    // testa vista dall'alto: elettrodi del sistema 10-20 come nodi di un grafo che si ricollega
     gnn(ctx, w, h, t) {
-      const nodes = [];
-      const r = rng(42);
-      const cx = w * 0.5, cy = h * 0.52, rx = Math.min(w * 0.42, h * 0.75), ry = h * 0.4;
-      for (let k = 0; k < 32; k++) {
-        const a = r() * Math.PI * 2, d = Math.sqrt(r());
-        nodes.push({ x: cx + Math.cos(a) * d * rx, y: cy + Math.sin(a) * d * ry, p: r() * 6.28 });
-      }
-      ctx.lineWidth = 1;
+      const R = Math.min(w, h) * 0.38, cx = w / 2, cy = h / 2 + R * 0.06;
+      const P = [[-.31,-.95],[.31,-.95],[-.81,-.59],[-.42,-.52],[0,-.5],[.42,-.52],[.81,-.59],
+                 [-.62,-.27],[-.2,-.25],[.2,-.25],[.62,-.27],[-1,0],[-.5,0],[0,0],[.5,0],[1,0],
+                 [-.62,.27],[-.2,.25],[.2,.25],[.62,.27],[-.81,.59],[-.42,.52],[0,.5],[.42,.52],[.81,.59],
+                 [-.31,.95],[0,1],[.31,.95]];
+      const nodes = P.map(([x, y], k) => ({ x: cx + x * R * .86, y: cy + y * R * .86, p: k * 1.9 % 6.28 }));
+      // testa: cerchio, naso, orecchie
+      ctx.strokeStyle = colors.line; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx - R * .12, cy - R * .99); ctx.lineTo(cx, cy - R * 1.13); ctx.lineTo(cx + R * .12, cy - R * .99); ctx.stroke();
+      for (const sgn of [-1, 1]) { ctx.beginPath(); ctx.ellipse(cx + sgn * R * 1.03, cy, R * .06, R * .17, 0, 0, 6.2832); ctx.stroke(); }
+      // connessioni che cambiano nel tempo
       for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i], b = nodes[j];
-          const dist = Math.hypot(a.x - b.x, a.y - b.y);
-          if (dist > rx * 0.55) continue;
+        for (let k = i + 1; k < nodes.length; k++) {
+          const a = nodes[i], b = nodes[k];
+          if (Math.hypot(a.x - b.x, a.y - b.y) > R * .62) continue;
           const s = Math.sin(t * 0.9 + a.p * 1.7 + b.p);
           if (s < 0.35) continue;
           ctx.globalAlpha = (s - 0.35) * 0.9;
@@ -492,12 +496,9 @@
       }
       ctx.globalAlpha = 1;
       for (const nd of nodes) {
-        const pulse = 1.8 + 1.2 * Math.max(0, Math.sin(t * 2 + nd.p));
         ctx.fillStyle = colors.fg;
-        ctx.beginPath(); ctx.arc(nd.x, nd.y, pulse, 0, 6.2832); ctx.fill();
+        ctx.beginPath(); ctx.arc(nd.x, nd.y, 1.8 + 1.2 * Math.max(0, Math.sin(t * 2 + nd.p)), 0, 6.2832); ctx.fill();
       }
-      ctx.strokeStyle = colors.line;
-      ctx.beginPath(); ctx.ellipse(cx, cy, rx * 1.08, ry * 1.12, 0, 0, 6.2832); ctx.stroke();
     },
     // monitor di terapia intensiva: ECG + pletismografia + frequenza cardiaca
     icu(ctx, w, h, t) {
@@ -645,6 +646,17 @@
       ctx.stroke();
     }
   };
+
+  // pagine progetto: animazione di intestazione con la stessa forma d'onda della card
+  document.querySelectorAll('canvas.wave-hero[data-wave]').forEach(cv => {
+    const fn = WAVES[cv.dataset.wave];
+    if (!fn) return;
+    let S = null;
+    const draw = (t) => { if (!S) S = fitCanvas(cv); S.ctx.clearRect(0, 0, S.w, S.h); fn(S.ctx, S.w, S.h, t); };
+    const redraw = animateWhenVisible(cv, draw);
+    window.addEventListener('resize', () => { S = null; redraw(); });
+    themeListeners.push(redraw);
+  });
 
   document.querySelectorAll('.ch').forEach(ch => {
     const cv = ch.querySelector('.ch-wave');
