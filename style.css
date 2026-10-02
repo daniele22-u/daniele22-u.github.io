@@ -686,6 +686,85 @@ img { max-width: 100%; display: block; }
   border-top: 1px solid var(--line);
 }
 
+/* ============ PAGINE PROGETTO ============ */
+:root:not([data-lang="it"]) .pj-page [lang="it"],
+:root[data-lang="it"] .pj-page [lang="en"] { display: none; }
+
+.pj-bar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 0 0 0 20px; height: 56px;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.pj-back { color: var(--fg); white-space: nowrap; }
+.pj-back:hover { color: var(--accent); }
+.pj-ch { color: var(--fg-dim); font-size: 10px; text-align: center; }
+.pj-tools { display: flex; height: 100%; }
+.pj-lang, .pj-theme {
+  width: 56px; height: 100%; display: grid; place-items: center;
+  background: none; border: 0; border-left: 1px solid var(--line);
+  color: var(--fg); cursor: pointer; padding: 0;
+}
+.pj-lang { font-size: 10px; letter-spacing: .1em; }
+.pj-lang span { color: var(--fg-dim); }
+:root:not([data-lang="it"]) .pj-lang .l-en, :root[data-lang="it"] .pj-lang .l-it { color: var(--fg); font-weight: 700; }
+.pj-theme svg { width: 18px; height: 18px; }
+
+.pj { max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+.wave-hero {
+  display: block; width: 100%; height: clamp(150px, 24vw, 240px);
+  margin: 32px 0 0; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-2);
+}
+.pj-head { padding: 36px 0 12px; }
+.pj-meta { color: var(--fg-dim); font-size: 11px; text-transform: none; letter-spacing: .04em; margin: 0 0 12px; }
+.pj-head h1 {
+  font-family: var(--f-display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(38px, 6.4vw, 72px); line-height: 1.02; margin: 0 0 20px;
+}
+.pj-lead { font-size: clamp(21px, 2.4vw, 26px); line-height: 1.45; margin: 0 0 20px; }
+.pj-team { color: var(--fg-dim); font-size: 11px; text-transform: none; letter-spacing: .04em; margin: 0 0 20px; }
+.pj-team a { color: var(--fg); border-bottom: 1px solid var(--line); }
+.pj-team a:hover { color: var(--accent); border-color: var(--accent); }
+.pj-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 0; }
+.pj-btn {
+  display: inline-block; padding: 10px 16px; border: 1px solid var(--line);
+  color: var(--fg); font-size: 11px; transition: border-color .2s, color .2s;
+}
+.pj-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.pj-sec { padding: 28px 0 4px; border-top: 1px solid var(--line); margin-top: 28px; }
+.pj-sec h2 { font-size: 12px; letter-spacing: .2em; font-weight: 500; margin: 0 0 16px; color: var(--fg-dim); }
+.pj-sec p, .pj-sec li { font-size: 19px; line-height: 1.6; }
+.pj-sec p { margin: 0 0 14px; }
+.pj-sec ul, .pj-sec ol { padding-left: 22px; margin: 0 0 14px; }
+.pj-sec li { margin-bottom: 8px; }
+.pj-sec li::marker { color: var(--accent); font-family: var(--f-mono); font-size: 14px; }
+.pj-note { color: var(--fg-dim); font-size: 16px !important; }
+.pj-table { border-collapse: collapse; margin: 0 0 18px; font-family: var(--f-mono); font-size: 13px; }
+.pj-table th, .pj-table td { text-align: left; padding: 8px 28px 8px 0; border-bottom: 1px solid var(--line); }
+.pj-table th { color: var(--fg-dim); font-weight: 400; text-transform: uppercase; letter-spacing: .08em; font-size: 10px; }
+
+.pj-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 56px; }
+.pj-nav a {
+  display: flex; flex-direction: column; gap: 8px; padding: 18px;
+  border: 1px solid var(--line); font-size: 18px; line-height: 1.3; transition: border-color .2s;
+}
+.pj-nav a:hover { border-color: var(--accent); }
+.pj-nav .mono { color: var(--fg-dim); font-size: 10px; }
+.pj-nav-next { text-align: right; align-items: flex-end; }
+.pj-foot a { color: var(--fg); }
+.pj-foot a:hover { color: var(--accent); }
+
+/* link "Read more" sulle card della home */
+.ch-more { color: var(--accent) !important; border-color: var(--accent) !important; }
+
+@media (max-width: 640px) {
+  .pj-ch { display: none; }
+  .pj-nav { grid-template-columns: 1fr; }
+  .pj-nav-next { text-align: left; align-items: flex-start; }
+  .pj-sec p, .pj-sec li { font-size: 17px; }
+}
+
 /* ============ RESPONSIVE ============ */
 @media (max-width: 1280px) {
   .topbar { grid-template-columns: 80px 1fr 40px 40px 40px auto; }

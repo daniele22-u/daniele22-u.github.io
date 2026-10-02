@@ -18,7 +18,7 @@
   const themeListeners = [];
 
   /* ---------- tema ---------- */
-  document.querySelector('.theme-toggle').addEventListener('click', () => {
+  document.querySelector('.theme-toggle')?.addEventListener('click', () => {
     const isLight = getComputedStyle(root).colorScheme === 'light';
     const next = isLight ? 'dark' : 'light';
     root.dataset.theme = next;
@@ -645,6 +645,17 @@
       ctx.stroke();
     }
   };
+
+  // pagine progetto: animazione di intestazione con la stessa forma d'onda della card
+  document.querySelectorAll('canvas.wave-hero[data-wave]').forEach(cv => {
+    const fn = WAVES[cv.dataset.wave];
+    if (!fn) return;
+    let S = null;
+    const draw = (t) => { if (!S) S = fitCanvas(cv); S.ctx.clearRect(0, 0, S.w, S.h); fn(S.ctx, S.w, S.h, t); };
+    const redraw = animateWhenVisible(cv, draw);
+    window.addEventListener('resize', () => { S = null; redraw(); });
+    themeListeners.push(redraw);
+  });
 
   document.querySelectorAll('.ch').forEach(ch => {
     const cv = ch.querySelector('.ch-wave');

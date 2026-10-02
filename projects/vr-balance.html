@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Virtual reality &amp; human balance — Daniele Uras</title>
+  <meta name="description" content="How much does what we see in virtual reality shake how we stand? A balance study with a pressure platform, run during an Erasmus research period in Poland.">
+  <link rel="canonical" href="https://daniele22-u.github.io/projects/vr-balance.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Virtual reality &amp; human balance — Daniele Uras">
+  <meta property="og:description" content="How much does what we see in virtual reality shake how we stand? A balance study with a pressure platform, run during an Erasmus research period in Poland.">
+  <meta property="og:image" content="https://daniele22-u.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/instrument-serif-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../style.css?v=202610021718">
+  <script>
+    (function () {
+      var d = document.documentElement, l = 'en';
+      try { var t = localStorage.getItem('theme'); if (t) d.dataset.theme = t; var s = localStorage.getItem('lang'); if (s === 'it' || s === 'en') l = s; else if ((navigator.language || '').toLowerCase().indexOf('it') === 0) l = 'it'; } catch (e) {}
+      var q = new URLSearchParams(location.search).get('lang'); if (q === 'it' || q === 'en') l = q;
+      d.lang = l; d.dataset.lang = l;
+    })();
+  </script>
+</head>
+<body class="pj-page">
+  <header class="pj-bar">
+    <a class="pj-back mono" href="../#work">← <span lang="en">All projects</span><span lang="it">Tutti i progetti</span></a>
+    <span class="pj-ch mono">CH-08 // <span lang="en">BIOMECHANICS</span><span lang="it">BIOMECCANICA</span></span>
+    <span class="pj-tools">
+      <button class="pj-lang mono" type="button"><span class="l-en">EN</span> <span class="l-it">IT</span><span class="sr-only"> — switch language / cambia lingua</span></button>
+      <button class="theme-toggle pj-theme" type="button" aria-label="Toggle light / dark theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/></svg></button>
+    </span>
+  </header>
+
+  <main class="pj">
+    <canvas class="wave-hero" data-wave="cop" aria-hidden="true"></canvas>
+    <div class="pj-head">
+      <p class="pj-meta mono"><span lang="en">Bachelor’s thesis · Erasmus at Łódź University of Technology · Feb – Jul 2024</span><span lang="it">Tesi triennale · Erasmus alla Łódź University of Technology · feb – lug 2024</span></p>
+      <h1><span lang="en">Virtual reality &amp; human balance</span><span lang="it">Realtà virtuale &amp; equilibrio</span></h1>
+      <p class="pj-lead"><span lang="en">How much does what we see in virtual reality shake how we stand? A balance study with a pressure platform, run during an Erasmus research period in Poland.</span><span lang="it">Quanto ciò che vediamo in realtà virtuale disturba il modo in cui stiamo in piedi? Uno studio sull’equilibrio con una pedana di pressione, svolto durante un periodo di ricerca in Erasmus in Polonia.</span></p>
+      <p class="pj-meta mono">MATLAB · Python · Unity</p>
+      
+      
+    </div>
+    <section class="pj-sec"><h2 class="mono">// <span lang="en">The study</span><span lang="it">Lo studio</span></h2><div lang="en"><p>Participants stood on a pressure (pedobarometric) platform while virtual-reality scenes introduced different visual perturbations. The platform records where body weight falls on the feet over time, the <em>centre of pressure</em>, which is a standard window on postural control.</p></div><div lang="it"><p>I partecipanti stavano in piedi su una pedana di pressione (pedobarometrica) mentre scene in realtà virtuale introducevano diverse perturbazioni visive. La pedana registra nel tempo dove cade il peso del corpo sui piedi, il <em>centro di pressione</em>, una finestra standard sul controllo posturale.</p></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">My work</span><span lang="it">Il mio lavoro</span></h2><div lang="en"><ul><li>Designed the experimental protocol.</li><li>Built the analysis pipeline in MATLAB and Python, extracting spatio-temporal centre-of-pressure parameters for each scenario.</li><li>Worked in the mechanical engineering laboratory of an international university, in English.</li></ul></div><div lang="it"><ul><li>Ho progettato il protocollo sperimentale.</li><li>Ho costruito la pipeline di analisi in MATLAB e Python, estraendo i parametri spazio-temporali del centro di pressione per ogni scenario.</li><li>Ho lavorato nel laboratorio di ingegneria meccanica di un’università internazionale, in inglese.</li></ul></div></section>
+    <nav class="pj-nav" aria-label="More projects"><a class="pj-nav-prev" href="brain-lesion-segmentation.html"><span class="mono">← CH-07</span><span lang="en">Brain lesion segmentation (MRI)</span><span lang="it">Segmentazione di lesioni cerebrali (MRI)</span></a><a class="pj-nav-next" href="thesis.html"><span class="mono">CH-01 →</span><span lang="en">Imagined speech decoding with graph &amp; hypergraph neural networks</span><span lang="it">Decodifica dell’imagined speech con graph &amp; hypergraph neural network</span></a></nav>
+  </main>
+
+  <footer class="legal mono pj-foot"><span>© 2026 Daniele Uras · <a href="../privacy.html">Privacy</a></span><a href="../">daniele22-u.github.io</a></footer>
+
+  <script>
+    document.querySelector('.pj-lang').addEventListener('click', function () {
+      var d = document.documentElement, l = d.dataset.lang === 'it' ? 'en' : 'it';
+      d.lang = l; d.dataset.lang = l;
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  </script>
+  <script defer src="../main.js?v=202610021718"></script>
+  <script data-goatcounter="https://daniele-u22.goatcounter.com/count" async src="../assets/js/count.js"></script>
+</body>
+</html>

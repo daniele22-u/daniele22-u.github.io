@@ -24,6 +24,18 @@ assets/
   Daniele_Uras_CV.pdf
 ```
 
+## Project pages
+
+`projects/*.html` are generated from the content in `tools/build_projects.py` (EN + IT). Edit the text there and run:
+
+```bash
+python3 tools/build_projects.py
+```
+
+## Staging
+
+Changes can be previewed at `https://daniele22-u.github.io/staging/` before going live. `tools/stage.sh <source> staging` copies the site there with `noindex`, no visit counter and a red STAGING banner; `robots.txt` also blocks `/staging/`. Delete the folder once the changes are merged.
+
 ## Run locally
 
 ```bash

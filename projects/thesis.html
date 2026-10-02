@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Imagined speech decoding with graph &amp; hypergraph neural networks — Daniele Uras</title>
+  <meta name="description" content="Can we tell which word someone is silently thinking from their brain activity alone?">
+  <link rel="canonical" href="https://daniele22-u.github.io/projects/thesis.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Imagined speech decoding with graph &amp; hypergraph neural networks — Daniele Uras">
+  <meta property="og:description" content="Can we tell which word someone is silently thinking from their brain activity alone?">
+  <meta property="og:image" content="https://daniele22-u.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/instrument-serif-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../style.css?v=202610021718">
+  <script>
+    (function () {
+      var d = document.documentElement, l = 'en';
+      try { var t = localStorage.getItem('theme'); if (t) d.dataset.theme = t; var s = localStorage.getItem('lang'); if (s === 'it' || s === 'en') l = s; else if ((navigator.language || '').toLowerCase().indexOf('it') === 0) l = 'it'; } catch (e) {}
+      var q = new URLSearchParams(location.search).get('lang'); if (q === 'it' || q === 'en') l = q;
+      d.lang = l; d.dataset.lang = l;
+    })();
+  </script>
+</head>
+<body class="pj-page">
+  <header class="pj-bar">
+    <a class="pj-back mono" href="../#work">← <span lang="en">All projects</span><span lang="it">Tutti i progetti</span></a>
+    <span class="pj-ch mono">CH-01 // <span lang="en">MSC THESIS</span><span lang="it">TESI MAGISTRALE</span></span>
+    <span class="pj-tools">
+      <button class="pj-lang mono" type="button"><span class="l-en">EN</span> <span class="l-it">IT</span><span class="sr-only"> — switch language / cambia lingua</span></button>
+      <button class="theme-toggle pj-theme" type="button" aria-label="Toggle light / dark theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/></svg></button>
+    </span>
+  </header>
+
+  <main class="pj">
+    <canvas class="wave-hero" data-wave="gnn" aria-hidden="true"></canvas>
+    <div class="pj-head">
+      <p class="pj-meta mono"><span lang="en">Master’s thesis · Politecnico di Milano · Nov 2025 – Oct 2026</span><span lang="it">Tesi magistrale · Politecnico di Milano · nov 2025 – ott 2026</span></p>
+      <h1><span lang="en">Imagined speech decoding with graph &amp; hypergraph neural networks</span><span lang="it">Decodifica dell’imagined speech con graph &amp; hypergraph neural network</span></h1>
+      <p class="pj-lead"><span lang="en">Can we tell which word someone is silently thinking from their brain activity alone?</span><span lang="it">Si può capire quale parola una persona sta pensando in silenzio, solo dalla sua attività cerebrale?</span></p>
+      <p class="pj-meta mono">Python · PyTorch · PyTorch Geometric · MNE · Weights &amp; Biases</p>
+      
+      
+    </div>
+    <section class="pj-sec"><h2 class="mono">// <span lang="en">The question</span><span lang="it">La domanda</span></h2><div lang="en"><p><em>Imagined speech</em> is the act of saying a word in your head without moving or making a sound. Decoding it from EEG would open a direct communication channel for people who cannot speak. It is also one of the hardest problems in brain–computer interfaces: the signal is weak, noisy and very different from one person to another.</p></div><div lang="it"><p>L’<em>imagined speech</em> è pronunciare una parola nella propria testa, senza muoversi né emettere suoni. Decodificarla dall’EEG aprirebbe un canale di comunicazione diretto per chi non può parlare. È anche uno dei problemi più difficili nelle interfacce cervello–computer: il segnale è debole, rumoroso e molto diverso da persona a persona.</p></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">The approach</span><span lang="it">L’approccio</span></h2><div lang="en"><p>Instead of hand-crafting features, I treat each EEG recording as a <strong>graph</strong>: electrodes are nodes, and the connections between them are computed from the signal of that specific trial. Graph neural networks, and <strong>hypergraph</strong> networks where a single connection can link many electrodes at once, then learn directly from the raw signal, end to end.</p><p>A large part of the work is methodological: evaluating models fairly across subjects and sessions, and understanding <em>why</em> a model works or fails, not only <em>whether</em> it does.</p></div><div lang="it"><p>Invece di progettare feature a mano, tratto ogni registrazione EEG come un <strong>grafo</strong>: gli elettrodi sono i nodi e le connessioni tra loro sono calcolate dal segnale di quel singolo trial. Reti neurali su grafi, e su <strong>ipergrafi</strong> in cui una connessione può unire più elettrodi insieme, imparano poi direttamente dal segnale grezzo, end to end.</p><p>Una parte importante del lavoro è metodologica: valutare i modelli in modo corretto tra soggetti e sessioni, e capire <em>perché</em> un modello funziona o fallisce, non solo <em>se</em> funziona.</p></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">Status</span><span lang="it">Stato</span></h2><div lang="en"><p>Work in progress. Details and results will be shared after the defence.</p></div><div lang="it"><p>Lavoro in corso. Dettagli e risultati saranno condivisi dopo la discussione.</p></div></section>
+    <nav class="pj-nav" aria-label="More projects"><a class="pj-nav-prev" href="vr-balance.html"><span class="mono">← CH-08</span><span lang="en">Virtual reality &amp; human balance</span><span lang="it">Realtà virtuale &amp; equilibrio</span></a><a class="pj-nav-next" href="icu.html"><span class="mono">CH-02 →</span><span lang="en">ICU mortality prediction</span><span lang="it">Predizione della mortalità in terapia intensiva</span></a></nav>
+  </main>
+
+  <footer class="legal mono pj-foot"><span>© 2026 Daniele Uras · <a href="../privacy.html">Privacy</a></span><a href="../">daniele22-u.github.io</a></footer>
+
+  <script>
+    document.querySelector('.pj-lang').addEventListener('click', function () {
+      var d = document.documentElement, l = d.dataset.lang === 'it' ? 'en' : 'it';
+      d.lang = l; d.dataset.lang = l;
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  </script>
+  <script defer src="../main.js?v=202610021718"></script>
+  <script data-goatcounter="https://daniele-u22.goatcounter.com/count" async src="../assets/js/count.js"></script>
+</body>
+</html>
