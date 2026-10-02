@@ -35,7 +35,6 @@
     "@type": "Person",
     "name": "Daniele Uras",
     "url": "https://daniele22-u.github.io/",
-    "image": "https://daniele22-u.github.io/assets/portrait.jpg",
     "jobTitle": "Biomedical Engineer",
     "description": "Biomedical engineer working on EEG, signal processing and machine learning.",
     "email": "mailto:uras.daniele22@gmail.com",
@@ -56,7 +55,7 @@
   <link rel="preload" href="assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=202610021345">
+  <link rel="stylesheet" href="style.css?v=202610021630">
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -120,13 +119,12 @@
       <div class="marquee mono reverse" aria-hidden="true"><div class="track" data-fill="samples"></div></div>
     </section>
 
-    <!-- ============ PORTRAIT ============ -->
-    <section class="portrait" aria-label="Portrait">
+    <!-- ============ MONTAGE (al posto della foto) ============ -->
+    <section class="portrait" aria-label="Illustration: EEG electrode montage">
       <div class="portrait-frame">
-        <div class="frame-bar mono"><span>subject_001.png</span><span>■ □ ×</span></div>
+        <div class="frame-bar mono"><span>subject_001 · montage_10-20</span><span>■ □ ×</span></div>
         <canvas id="ascii" aria-hidden="true"></canvas>
-        <img id="portrait-src" src="assets/portrait.jpg" alt="Portrait of Daniele Uras" width="900" height="1125">
-        <div class="frame-foot mono"><span id="ascii-status">rendering…</span><span data-i18n="portrait.hover">hover to reveal</span></div>
+        <div class="frame-foot mono"><span id="ascii-status">scanning…</span><span data-i18n="portrait.hover">hover: connectivity</span></div>
       </div>
     </section>
 
@@ -373,7 +371,7 @@
 
   <!-- statistiche anonime, senza cookie (GoatCounter) -->
   <script data-goatcounter="https://daniele-u22.goatcounter.com/count" async src="assets/js/count.js"></script>
-  <script src="i18n.js?v=202610021345"></script>
-  <script src="main.js?v=202610021345"></script>
+  <script src="i18n.js?v=202610021630"></script>
+  <script src="main.js?v=202610021630"></script>
 </body>
 </html>

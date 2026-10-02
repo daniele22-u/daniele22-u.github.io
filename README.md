@@ -15,9 +15,8 @@ privacy.html          privacy notice (EN/IT)
 robots.txt, sitemap.xml   search-engine basics
 i18n.js               Italian translations + EN/IT switch
 style.css             layout, themes (dark default, light toggle), responsive rules
-main.js               animations: EEG hero, ASCII portrait, project waveforms
+main.js               animations: EEG hero, ASCII electrode montage, project waveforms
 assets/
-  portrait.jpg        profile photo
   og.png              1200×630 link-preview card (LinkedIn, WhatsApp, …)
   fonts/              self-hosted woff2 fonts + SIL OFL licences (no Google Fonts)
   js/count.js         GoatCounter script, served locally
@@ -32,7 +31,7 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
-A local server is needed: if `index.html` is opened directly from disk, the browser blocks reading the photo pixels and the ASCII portrait falls back to the plain image.
+A local server is recommended so that fonts and paths behave exactly as on GitHub Pages.
 
 ## Editing
 
