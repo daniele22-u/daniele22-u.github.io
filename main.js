@@ -268,6 +268,169 @@
     }, { threshold: 0.2 }).observe(card);
   }
 
+  /* ---------- PATH: timeline con traccia e marker ---------- */
+  const tl = document.querySelector('.tl');
+  if (tl) {
+    const T0 = 2021.5, T1 = 2027.0;
+    const ym = (s) => { const [y, m] = s.split('-').map(Number); return y + (m - 1) / 12; };
+    const X = (t) => (t - T0) / (T1 - T0);
+    const items = [...document.querySelectorAll('.tl-data li')];
+    const plot = tl.querySelector('.tl-plot');
+    const markersBox = tl.querySelector('.tl-markers');
+    const detail = document.querySelector('.tl-detail');
+    let selected = items.findIndex(li => li.dataset.marker === '06');
+    if (selected < 0) selected = 0;
+
+    // asse: un tick per anno
+    const axis = tl.querySelector('.tl-axis');
+    for (let y = 2022; y <= 2026; y++) {
+      const s = document.createElement('span');
+      s.textContent = y;
+      s.style.left = (X(y) * 100) + '%';
+      axis.appendChild(s);
+    }
+
+    // corsie: una barra per esperienza, impilate se si sovrappongono
+    const tracks = {};
+    tl.querySelectorAll('.lane').forEach(l => {
+      const tr = document.createElement('div');
+      tr.className = 'lane-track';
+      l.appendChild(tr);
+      tracks[l.dataset.lane] = { el: tr, rows: [] };
+    });
+    const bands = [], marks = [];
+    items.forEach((li, i) => {
+      const t0 = ym(li.dataset.start), t1 = ym(li.dataset.end) + 1 / 12;
+      const lane = tracks[li.dataset.lane];
+      if (lane) {
+        let row = lane.rows.findIndex(end => end <= t0);
+        if (row < 0) { row = lane.rows.length; lane.rows.push(t1); } else lane.rows[row] = t1;
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'tl-bar';
+        b.style.setProperty('--x', X(t0));
+        b.style.setProperty('--w', X(t1) - X(t0));
+        b.style.setProperty('--row', row);
+        b.dataset.i = i;
+        lane.el.appendChild(b);
+        bands[i] = b;
+      }
+      if (li.dataset.marker) {
+        const m = document.createElement('button');
+        m.type = 'button';
+        m.className = 'mk';
+        m.style.setProperty('--x', X(t0));
+        m.dataset.i = i;
+        m.dataset.t = t0;
+        m.innerHTML = `<span class="mk-n">${li.dataset.marker}</span>`;
+        markersBox.appendChild(m);
+        marks[i] = m;
+      }
+    });
+    Object.values(tracks).forEach(l => l.el.style.setProperty('--rows', Math.max(1, l.rows.length)));
+
+    // marker vicini: il secondo scende di una riga
+    const now = document.createElement('div');
+    now.className = 'tl-now';
+    now.style.setProperty('--x', X(2026 + 9.5 / 12));
+    now.innerHTML = '<span>NOW</span>';
+    tl.appendChild(now);
+
+    const layoutMarkers = () => {
+      const w = plot.clientWidth;
+      let lastX = -1e9, lastRow2 = false;
+      marks.filter(Boolean).forEach(m => {
+        const x = parseFloat(m.style.getPropertyValue('--x')) * w;
+        const row2 = (x - lastX < 36) && !lastRow2;
+        m.classList.toggle('row2', row2);
+        lastX = x; lastRow2 = row2;
+      });
+    };
+
+    const renderDetail = () => {
+      const li = items[selected];
+      const n = li.dataset.marker || '··';
+      detail.innerHTML = `<div class="d-n">${n}</div><div>${li.innerHTML}</div>`;
+      bands.forEach((b, i) => b && b.classList.toggle('on', i === selected));
+      marks.forEach((m, i) => m && m.classList.toggle('on', i === selected));
+    };
+    const select = (i) => { if (i === selected) return; selected = i; renderDetail(); drawTrace(); };
+    tl.addEventListener('click', (e) => {
+      const el = e.target.closest('.tl-bar, .mk');
+      if (el) select(+el.dataset.i);
+    });
+    if (window.matchMedia('(hover: hover)').matches) {
+      tl.addEventListener('mouseover', (e) => {
+        const el = e.target.closest('.tl-bar, .mk');
+        if (el) select(+el.dataset.i);
+      });
+    }
+    window.addEventListener('langchange', renderDetail);
+
+    // traccia: EEG di fondo + risposta evocata su ogni marker
+    const cv = tl.querySelector('.tl-trace');
+    const sig = makeChannel(77);
+    const g = (x, mu, s) => Math.exp(-((x - mu) * (x - mu)) / (2 * s * s));
+    let S = fitCanvas(cv), progress = reduceMotion ? 1 : 0;
+    const markerXs = () => marks.map((m, i) => m ? { i, x: parseFloat(m.style.getPropertyValue('--x')) * S.w } : null).filter(Boolean);
+    const yAt = (x, mx, base, amp) => {
+      let v = sig(x / 18) * 0.28;
+      for (const { x: px } of mx) {
+        const d = x - px;
+        if (d > -10 && d < 70) v += -0.7 * g(d, 8, 3) + 1.9 * g(d, 22, 6) - 0.6 * g(d, 42, 9);
+      }
+      return base - v * amp;
+    };
+    function drawTrace() {
+      const { ctx, w, h } = S;
+      ctx.clearRect(0, 0, w, h);
+      const mx = markerXs();
+      const base = h * 0.66, amp = h * 0.2, end = w * progress;
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = colors.trace;
+      ctx.beginPath();
+      for (let x = 0; x <= end; x += 1.5) { const y = yAt(x, mx, base, amp); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke();
+      // risposta evocata del marker selezionato in evidenza
+      const sel = mx.find(m => m.i === selected);
+      if (sel && sel.x < end) {
+        ctx.strokeStyle = colors.accent;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let x = Math.max(0, sel.x - 6); x <= Math.min(end, sel.x + 64); x += 1) { const y = yAt(x, mx, base, amp); x === Math.max(0, sel.x - 6) ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+        ctx.stroke();
+      }
+      // penna
+      if (progress < 1) {
+        ctx.fillStyle = colors.rec;
+        ctx.beginPath(); ctx.arc(end, yAt(end, mx, base, amp), 3, 0, 6.2832); ctx.fill();
+      }
+      marks.forEach(m => { if (m) m.classList.toggle('shown', parseFloat(m.style.getPropertyValue('--x')) * w <= end + 2); });
+    }
+
+    layoutMarkers();
+    renderDetail();
+    drawTrace();
+    // su schermi stretti la timeline scorre: parto dagli eventi più recenti
+    const sc = document.querySelector('.tl-scroll');
+    if (sc) sc.scrollLeft = sc.scrollWidth;
+    if (!reduceMotion) {
+      new IntersectionObserver(([e], obs) => {
+        if (!e.isIntersecting) return;
+        obs.disconnect();
+        const t1 = performance.now();
+        const step = (t) => {
+          progress = Math.min(1, (t - t1) / 2600);
+          drawTrace();
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }, { threshold: 0.35 }).observe(tl);
+    }
+    window.addEventListener('resize', () => { S = fitCanvas(cv); layoutMarkers(); drawTrace(); });
+    themeListeners.push(drawTrace);
+  }
+
   /* ---------- WORK: forme d'onda dei canali ---------- */
   const sleepSig = makeChannel(11);
   const WAVES = {
