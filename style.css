@@ -170,6 +170,8 @@ img { max-width: 100%; display: block; }
 
 .dim { color: var(--fg-dim); }
 
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
 .rec-dot {
   display: inline-block;
   width: 7px; height: 7px;
@@ -309,7 +311,6 @@ img { max-width: 100%; display: block; }
   border-bottom: 1px solid var(--line);
   font-size: 10px;
   color: var(--fg-dim);
-  opacity: 0.7;
   padding: 7px 0;
   white-space: nowrap;
 }
@@ -604,17 +605,19 @@ img { max-width: 100%; display: block; }
   display: flex; align-items: center; padding-left: 14px;
   background: var(--bg-2); font-size: 10px; color: var(--fg-dim); white-space: nowrap;
 }
-.lane-track { position: relative; flex: 1; margin-right: var(--rpad); height: calc(var(--rows, 1) * 16px + 14px); }
+.lane-track { position: relative; flex: 1; margin-right: var(--rpad); height: calc(var(--rows, 1) * 24px + 4px); }
 .tl-bar {
-  position: absolute; height: 10px; min-width: 8px;
+  position: absolute; height: 24px; min-width: 24px;
   left: calc(var(--x) * 100%); width: calc(var(--w) * 100%);
-  top: calc(7px + var(--row, 0) * 16px);
+  top: calc(2px + var(--row, 0) * 24px);
   border: 0; padding: 0; cursor: pointer;
-  background: var(--trace); opacity: .55;
-  transition: opacity .2s, background .2s, transform .2s;
+  --bar: var(--trace);
+  background: linear-gradient(transparent 7px, var(--bar) 7px, var(--bar) 17px, transparent 17px);
+  opacity: .55;
+  transition: opacity .2s;
 }
 .tl-bar:hover, .tl-bar:focus-visible { opacity: 1; }
-.tl-bar.on { background: var(--accent); opacity: 1; }
+.tl-bar.on { --bar: var(--accent); opacity: 1; }
 
 .tl-now {
   position: absolute; top: 37px; bottom: 14px; width: 0;
