@@ -357,24 +357,13 @@ img { max-width: 100%; display: block; }
 .frame-bar { border-bottom: 1px solid var(--line); }
 .frame-foot { border-top: 1px solid var(--line); }
 
-#ascii, #portrait-src {
+#ascii {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   height: auto;
   display: block;
+  cursor: crosshair;
 }
-#portrait-src {
-  position: absolute;
-  top: 33px;
-  left: 0;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity .6s ease;
-}
-.portrait-frame:hover #portrait-src,
-.portrait-frame:focus-within #portrait-src { opacity: 1; }
-.portrait-frame.no-canvas #ascii { display: none; }
-.portrait-frame.no-canvas #portrait-src { position: static; opacity: 1; }
 
 /* ============ ABOUT (stanza in prospettiva) ============ */
 .about {

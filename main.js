@@ -179,85 +179,101 @@
     themeListeners.push(redraw);
   }
 
-  /* ---------- PORTRAIT: ritratto in ASCII ---------- */
+  /* ---------- MONTAGE: testa EEG in ASCII (sistema 10-20), al posto della foto ---------- */
   const ascii = document.getElementById('ascii');
-  const img = document.getElementById('portrait-src');
   const status = document.getElementById('ascii-status');
-  if (ascii && img) {
-    const RAMP = ' .·:-=+*01#%@';
-    let grid = null, cols = 0, rows = 0, revealed = 0, started = false;
-
-    const sample = () => {
-      const S = fitCanvas(ascii);
-      cols = Math.round(S.w / 3.6);
-      rows = Math.round(cols * (img.naturalHeight / img.naturalWidth) * 0.55);
-      const off = document.createElement('canvas');
-      off.width = cols; off.height = rows;
-      const octx = off.getContext('2d', { willReadFrequently: true });
-      octx.drawImage(img, 0, 0, cols, rows);
-      const data = octx.getImageData(0, 0, cols, rows).data; // lancia se il canvas è “tainted”
-      grid = new Float32Array(cols * rows);
-      for (let k = 0; k < cols * rows; k++) {
-        grid[k] = (0.299 * data[k * 4] + 0.587 * data[k * 4 + 1] + 0.114 * data[k * 4 + 2]) / 255;
-      }
-      // stretch del contrasto: lo sfondo grigio e la giacca scura spariscono, restano viso e camicia
-      const sorted = Array.from(grid).sort((a, b) => a - b);
-      const lo = sorted[Math.floor(sorted.length * 0.6)], hi = sorted[Math.floor(sorted.length * 0.995)];
-      for (let k = 0; k < grid.length; k++) grid[k] = Math.pow(Math.min(1, Math.max(0, (grid[k] - lo) / (hi - lo || 1))), 0.9);
-      return S;
+  if (ascii) {
+    const RAMP = ' .·:-=+*#%@';
+    // posizioni 2D (proiezione dall'alto): x verso destra, y verso la nuca; naso in alto
+    const ELEC = [
+      ['Fp1',-.31,-.95],['Fpz',0,-1],['Fp2',.31,-.95],['AF3',-.33,-.77],['AF4',.33,-.77],
+      ['F7',-.81,-.59],['F3',-.42,-.52],['Fz',0,-.5],['F4',.42,-.52],['F8',.81,-.59],
+      ['FC5',-.62,-.27],['FC1',-.2,-.25],['FC2',.2,-.25],['FC6',.62,-.27],
+      ['T7',-1,0],['C3',-.5,0],['Cz',0,0],['C4',.5,0],['T8',1,0],
+      ['CP5',-.62,.27],['CP1',-.2,.25],['CP2',.2,.25],['CP6',.62,.27],
+      ['P7',-.81,.59],['P3',-.42,.52],['Pz',0,.5],['P4',.42,.52],['P8',.81,.59],
+      ['PO3',-.33,.77],['PO4',.33,.77],['O1',-.31,.95],['Oz',0,1],['O2',.31,.95]
+    ].map(([n, x, y], i) => ({ n, x: x * .84, y: y * .84, f: .5 + (i * 37 % 11) / 10, p: i * 1.7 }));
+    // coppie candidate per le connessioni (elettrodi vicini)
+    const PAIRS = [];
+    for (let a = 0; a < ELEC.length; a++) for (let b = a + 1; b < ELEC.length; b++) {
+      const d = Math.hypot(ELEC[a].x - ELEC[b].x, ELEC[a].y - ELEC[b].y);
+      if (d < .62) PAIRS.push([a, b, (a * 7 + b * 13) % 17 / 2.7]);
+    }
+    const frame = ascii.parentElement;
+    let S = null, cols = 0, rows = 0, cw = 0, chh = 0, t0 = null, last = -1, hover = false;
+    const gauss = (d2, s) => Math.exp(-d2 / (2 * s * s));
+    const segDist2 = (px, py, ax, ay, bx, by) => {
+      const vx = bx - ax, vy = by - ay, k = Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / (vx * vx + vy * vy)));
+      const dx = px - ax - k * vx, dy = py - ay - k * vy; return dx * dx + dy * dy;
     };
-
-    const render = (S, upto) => {
+    const fit = () => {
+      S = fitCanvas(ascii);
+      cols = Math.max(30, Math.round(S.w / 6.6));
+      cw = S.w / cols; chh = cw / .6;
+      rows = Math.floor(S.h / chh);
+    };
+    const draw = (t) => {
+      if (!S) fit();
+      if (t - last < 1 / 30 && last >= 0) return;   // ~30 fps bastano
+      last = t;
+      if (t0 === null) t0 = t;
       const { ctx, w, h } = S;
+      const cx = w / 2, cy = h / 2 + chh * .4, R = Math.min(w, h) * .38;
+      const reveal = reduceMotion ? rows : Math.min(rows, Math.floor((t - t0) / 1.8 * rows));
+      const act = ELEC.map(el => .55 + .45 * Math.sin(t * el.f + el.p));
       ctx.clearRect(0, 0, w, h);
-      const cw = w / cols, chh = h / rows;
-      ctx.font = `${Math.ceil(chh * 1.05)}px "JetBrains Mono", monospace`;
+      ctx.font = `${Math.ceil(chh * .95)}px "JetBrains Mono", monospace`;
       ctx.textBaseline = 'top';
-      ctx.fillStyle = colors.fg;
-      for (let y = 0; y < Math.min(rows, upto); y++) {
-        for (let x = 0; x < cols; x++) {
-          const v = grid[y * cols + x];
+      for (let r = 0; r < reveal; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = (c * cw + cw / 2 - cx) / R, y = (r * chh + chh / 2 - cy) / R;
+          const rr = Math.hypot(x, y);
+          let v = gauss((rr - 1) * (rr - 1), .028);                        // contorno della testa
+          v = Math.max(v, gauss(Math.min(segDist2(x, y, -.13, -.99, 0, -1.16), segDist2(x, y, .13, -.99, 0, -1.16)), .025)); // naso
+          const ex = (Math.abs(x) - 1.05) / .055, ey = y / .17;            // orecchie
+          v = Math.max(v, gauss((Math.hypot(ex, ey) - 1) * (Math.hypot(ex, ey) - 1), .22) * (Math.abs(x) > 1 ? 1 : 0));
+          if (rr < .97 && (r + c) % 3 === 0) v = Math.max(v, .1);         // trama interna
+          let hot = false;
+          for (let k = 0; k < ELEC.length; k++) {
+            const dx = x - ELEC[k].x, dy = y - ELEC[k].y, d2 = dx * dx + dy * dy;
+            if (d2 > .03) continue;
+            const e = act[k] * gauss(d2, .058);
+            if (e > v) { v = e; hot = act[k] > .88 && e > .5; }
+          }
+          if (v < .08) continue;
           const ch = RAMP[Math.min(RAMP.length - 1, Math.floor(v * RAMP.length))];
-          if (ch !== ' ') ctx.fillText(ch, x * cw, y * chh);
+          ctx.fillStyle = hot ? colors.accent : colors.fg;
+          ctx.fillText(ch, c * cw, r * chh);
         }
       }
-      // linea di scansione
-      if (upto < rows) {
-        ctx.fillStyle = colors.accent;
-        ctx.fillRect(0, upto * chh, w, 1.5);
+      if (reveal < rows) { ctx.fillStyle = colors.accent; ctx.fillRect(0, reveal * chh, w, 1.5); }
+      // al passaggio del mouse: connessioni tra elettrodi (il grafo) ed etichette
+      if (hover && reveal >= rows) {
+        ctx.lineWidth = 1;
+        for (const [a, b, ph] of PAIRS) {
+          const s = Math.sin(t * .8 + ph);
+          if (s < .45) continue;
+          ctx.globalAlpha = (s - .45) * 1.6;
+          ctx.strokeStyle = colors.accent;
+          ctx.beginPath();
+          ctx.moveTo(cx + ELEC[a].x * R, cy + ELEC[a].y * R);
+          ctx.lineTo(cx + ELEC[b].x * R, cy + ELEC[b].y * R);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        ctx.font = `9px "JetBrains Mono", monospace`;
+        ctx.fillStyle = colors['fg-dim'];
+        ELEC.forEach(el => ctx.fillText(el.n.toUpperCase(), cx + el.x * R + 6, cy + el.y * R - 12));
       }
+      if (status) status.textContent = reveal < rows ? `scanning… ${Math.floor(reveal / rows * 100)}%` : `montage 10-20 · ${ELEC.length} ch`;
     };
-
-    const start = () => {
-      if (started) return;
-      started = true;
-      let S;
-      try { S = sample(); } catch (e) {
-        ascii.parentElement.classList.add('no-canvas');
-        status.textContent = 'subject_001';
-        return;
-      }
-      const finish = () => { status.textContent = `rendered · ${cols}×${rows} chars`; };
-      if (reduceMotion) { revealed = rows; render(S, rows); finish(); return; }
-      const t1 = performance.now();
-      const step = (t) => {
-        revealed = Math.floor((t - t1) / 1800 * rows);
-        render(S, revealed);
-        status.textContent = `rendering… ${Math.min(100, Math.floor(revealed / rows * 100))}%`;
-        if (revealed < rows) requestAnimationFrame(step); else { render(S, rows); finish(); }
-      };
-      requestAnimationFrame(step);
-      const rerender = () => { try { S = sample(); render(S, rows); } catch (e) {} };
-      window.addEventListener('resize', rerender);
-      themeListeners.push(rerender);
-    };
-
-    const whenReady = () => {
-      new IntersectionObserver(([e], obs) => {
-        if (e.isIntersecting) { obs.disconnect(); document.fonts.ready.then(start); }
-      }, { threshold: 0.25 }).observe(ascii);
-    };
-    if (img.complete && img.naturalWidth) whenReady(); else img.addEventListener('load', whenReady);
+    frame.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') hover = true; });
+    frame.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hover = false; });
+    frame.addEventListener('click', () => { hover = !hover; });
+    const redraw = animateWhenVisible(ascii, draw);
+    window.addEventListener('resize', () => { fit(); last = -1; redraw(); });
+    themeListeners.push(() => { last = -1; redraw(); });
   }
 
   /* ---------- ABOUT: reveal ---------- */
