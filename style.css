@@ -419,6 +419,9 @@ img { max-width: 100%; display: block; }
 }
 .ch-link:hover { color: var(--accent); border-color: var(--accent); }
 .ch-link + .ch-link { margin-left: 18px; }
+.ch-team { color: var(--fg-dim); font-size: 10px !important; text-transform: none; letter-spacing: .04em; margin: 4px 0 6px !important; }
+.ch-team a { color: var(--fg); border-bottom: 1px solid var(--line); transition: color .2s, border-color .2s; }
+.ch-team a:hover { color: var(--accent); border-color: var(--accent); }
 .ch-note { color: var(--accent); font-size: 10px !important; margin-top: 14px !important; }
 
 /* ============ SKILLS ============ */
