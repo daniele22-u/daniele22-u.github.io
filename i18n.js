@@ -83,7 +83,7 @@ window.I18N_IT = {
 
   'path.bsc.t': 'Laurea triennale in Ingegneria Biomedica',
   'path.bsc.d': 'Università di Cagliari · set 2021 – set 2024',
-  'path.bsc.x': 'Triennale all’Università di Cagliari, voto finale 105/110. Comprende cinque mesi di ricerca in Erasmus in Polonia.',
+  'path.bsc.x': 'Triennale all’Università di Cagliari, con cinque mesi di ricerca in Erasmus in Polonia.',
   'path.rep.t': 'Rappresentante degli studenti eletto',
   'path.rep.d': 'Università di Cagliari → Politecnico di Milano · 2023 – 2026',
   'path.rep.x': 'Rappresentante degli studenti eletto dal 2023, prima a Cagliari e poi al PoliMi, nelle commissioni di dipartimento, a fare da tramite tra studenti, docenti e amministrazione.',
@@ -92,7 +92,7 @@ window.I18N_IT = {
   'path.lodz.x': 'Ho progettato il protocollo sperimentale e analizzato i dati della pedana di pressione e del centro di pressione per studiare come la realtà virtuale perturba l’equilibrio, in un laboratorio internazionale.',
   'path.msc.t': 'Laurea magistrale in Ingegneria Biomedica — indirizzo bioinformatica',
   'path.msc.d': 'Politecnico di Milano · set 2024 – ott 2026 (prevista)',
-  'path.msc.x': 'Magistrale al Politecnico di Milano, indirizzo bioinformatica, media ponderata 28,02/30.',
+  'path.msc.x': 'Magistrale al Politecnico di Milano, indirizzo bioinformatica.',
   'path.sleep.t': 'Analisi delle fasi del sonno da EEG',
   'path.sleep.d': 'Progetto di corso · ott 2024 – gen 2025',
   'path.sleep.x': 'Classificazione automatica delle fasi del sonno da EEG notturno.',
