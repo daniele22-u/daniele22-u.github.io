@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=202610020956">
+  <link rel="stylesheet" href="style.css?v=202610021013">
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -94,7 +94,7 @@
         <div class="about-body">
           <p data-i18n="about.p1">I'm a biomedical engineer working where signals meet learning. I did my bachelor's at the University of Cagliari and I'm finishing an MSc in Biomedical Engineering at Politecnico di Milano, on the bioinformatics track.</p>
           <p data-i18n="about.p2">Most of my work starts from a noisy physiological recording — an EEG, a vital-sign stream, a pressure platform, an MRI volume — and ends with a model that has to make sense of it. I like owning the whole chain: defining the problem, cleaning the data, building and validating the model, and the moment a pipeline finally tells you something real.</p>
-          <p data-i18n="about.p3">Right now I'm writing my master's thesis on deep learning for EEG decoding. Outside the lab I've spent four years as an elected student representative, first in Cagliari and then at PoliMi, because I care about how universities work for the people inside them.</p>
+          <p data-i18n="about.p3">Right now I'm writing my master's thesis on deep learning for EEG decoding. Outside the lab I've been an elected student representative since 2023, first in Cagliari and then at PoliMi, because I care about how universities work for the people inside them.</p>
         </div>
       </article>
     </section>
@@ -104,7 +104,7 @@
       <div class="montage-bar mono">
         <span><b>// RECORDING MONTAGE</b>&nbsp; v2.1</span>
         <span class="hide-sm">ACQUISITION ACTIVE // <span id="stamp"></span></span>
-        <span>7/7 CHANNELS ONLINE</span>
+        <span>8/8 CHANNELS ONLINE</span>
       </div>
 
       <div class="montage">
@@ -114,7 +114,7 @@
           <div class="ch-body">
             <p class="ch-meta mono">Python · PyTorch · PyG · MNE · Nov 2025 – Oct 2026</p>
             <h2 data-i18n="w.thesis.t">Imagined speech decoding with graph &amp; hypergraph neural networks</h2>
-            <p data-i18n="w.thesis.b">Master's thesis at Politecnico di Milano (DEIB). Can we tell which word someone is silently thinking from their EEG? I design deep learning models that treat each recording as a graph of electrodes and learn end-to-end from the raw signal, with the long-term goal of a semantic “neural dictionary”.</p>
+            <p data-i18n="w.thesis.b">Master's thesis at Politecnico di Milano. Can we tell which word someone is silently thinking from their EEG? I design deep learning models that treat each recording as a graph of electrodes and learn end-to-end from the raw signal, with the long-term goal of a semantic “neural dictionary”.</p>
             <p class="ch-note mono" data-i18n="w.thesis.n">// work in progress — details after the defence</p>
           </div>
         </article>
@@ -129,8 +129,19 @@
             <a class="ch-link mono" href="https://daniele22-u.github.io/smart_hospital_polimi/dashboard/" data-goatcounter-click="demo-icu" target="_blank" rel="noopener"><span data-i18n="w.demo">Live demo</span> ↗</a>
           </div>
         </article>
+        <article class="ch" data-wave="sea">
+          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-03 // <span data-i18n="w.hhe.l">ENVIRONMENT</span></span></header>
+          <canvas class="ch-wave" aria-hidden="true"></canvas>
+          <div class="ch-body">
+            <p class="ch-meta mono">Python · GeoPandas · React · Leaflet · Apr – Jun 2026</p>
+            <h2 data-i18n="w.hhe.t">Marine litter hazard assessment — Sardinia</h2>
+            <p data-i18n="w.hhe.b">Human Health &amp; Environment lab: six years (2018–2023) of beach, floating, seafloor and microplastic litter surveys cleaned and analysed into a spatial hazard index, explored through an interactive bilingual map dashboard.</p>
+            <a class="ch-link mono" href="https://github.com/daniele22-u/hhe-labsardinia" data-goatcounter-click="code-hhe" target="_blank" rel="noopener"><span data-i18n="w.code">View code</span> →</a>
+          </div>
+        </article>
+
         <article class="ch" data-wave="nda">
-          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-03 // <span data-i18n="w.sxt.l">INDUSTRY</span></span></header>
+          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-04 // <span data-i18n="w.sxt.l">INDUSTRY</span></span></header>
           <canvas class="ch-wave" aria-hidden="true"></canvas>
           <div class="ch-body">
             <p class="ch-meta mono">SXT S.r.l. · Milan · Sept 2025 – Feb 2026</p>
@@ -140,7 +151,7 @@
           </div>
         </article>
         <article class="ch" data-wave="sleep">
-          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-04 // <span data-i18n="w.narco.l">CLINICAL SW</span></span></header>
+          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-05 // <span data-i18n="w.narco.l">CLINICAL SW</span></span></header>
           <canvas class="ch-wave" aria-hidden="true"></canvas>
           <div class="ch-body">
             <p class="ch-meta mono">Python · SQL · XML · Apr – Jun 2025</p>
@@ -149,7 +160,7 @@
           </div>
         </article>
         <article class="ch" data-wave="eeg">
-          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-05 // <span data-i18n="w.sleep.l">EEG</span></span></header>
+          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-06 // <span data-i18n="w.sleep.l">EEG</span></span></header>
           <canvas class="ch-wave" aria-hidden="true"></canvas>
           <div class="ch-body">
             <p class="ch-meta mono">MATLAB · Python · Oct 2024 – Jan 2025</p>
@@ -159,7 +170,7 @@
           </div>
         </article>
         <article class="ch" data-wave="mri">
-          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-06 // <span data-i18n="w.mri.l">IMAGING</span></span></header>
+          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-07 // <span data-i18n="w.mri.l">IMAGING</span></span></header>
           <canvas class="ch-wave" aria-hidden="true"></canvas>
           <div class="ch-body">
             <p class="ch-meta mono">MATLAB · Dec 2024 – Feb 2025</p>
@@ -169,7 +180,7 @@
           </div>
         </article>
         <article class="ch ch-wide" data-wave="cop">
-          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-07 // <span data-i18n="w.vr.l">BIOMECHANICS</span></span></header>
+          <header class="ch-head mono"><span class="rec">● REC</span><span>CH-08 // <span data-i18n="w.vr.l">BIOMECHANICS</span></span></header>
           <canvas class="ch-wave" aria-hidden="true"></canvas>
           <div class="ch-body">
             <p class="ch-meta mono">MATLAB · Python · Unity · Feb – Jul 2024</p>
@@ -223,10 +234,10 @@
             <p class="ev-meta mono" data-i18n="path.bsc.d">Università di Cagliari · Sept 2021 – Sept 2024</p>
             <p class="ev-desc" data-i18n="path.bsc.x">Bachelor's degree at the University of Cagliari, final grade 105/110. Included a five-month Erasmus research period in Poland.</p>
           </li>
-          <li data-lane="gov" data-start="2022-01" data-end="2026-10" data-marker="02">
+          <li data-lane="gov" data-start="2023-01" data-end="2026-10" data-marker="02">
             <h3 data-i18n="path.rep.t">Elected student representative</h3>
-            <p class="ev-meta mono" data-i18n="path.rep.d">Università di Cagliari → Politecnico di Milano · 2022 – 2026</p>
-            <p class="ev-desc" data-i18n="path.rep.x">Four years as an elected representative, first in Cagliari and then at PoliMi, sitting on departmental committees at DEIB. Member of Svoltastudenti, the national student association, since 2022.</p>
+            <p class="ev-meta mono" data-i18n="path.rep.d">Università di Cagliari → Politecnico di Milano · 2023 – 2026</p>
+            <p class="ev-desc" data-i18n="path.rep.x">Elected student representative since 2023, first in Cagliari and then at PoliMi, sitting on departmental committees and working between students, faculty and administration.</p>
           </li>
           <li data-lane="res" data-start="2024-02" data-end="2024-07" data-marker="03">
             <h3 data-i18n="path.lodz.t">Bachelor's thesis — Łódź University of Technology</h3>
@@ -260,13 +271,23 @@
           </li>
           <li data-lane="res" data-start="2025-11" data-end="2026-10" data-marker="06">
             <h3 data-i18n="path.thesis.t">Master's thesis — deep learning for EEG decoding</h3>
-            <p class="ev-meta mono" data-i18n="path.thesis.d">Politecnico di Milano, DEIB · Nov 2025 – Oct 2026</p>
+            <p class="ev-meta mono" data-i18n="path.thesis.d">Politecnico di Milano · Nov 2025 – Oct 2026</p>
             <p class="ev-desc" data-i18n="path.thesis.x">Designing and training deep learning models that decode EEG signals end-to-end. Details after the defence.</p>
           </li>
           <li data-lane="proj" data-start="2026-03" data-end="2026-06">
             <h3 data-i18n="path.icu.t">ICU mortality prediction</h3>
             <p class="ev-meta mono" data-i18n="path.icu.d">Course project · Mar – Jun 2026</p>
             <p class="ev-desc" data-i18n="path.icu.x">Mortality prediction on ICU vital signs with XGBoost, 1D-CNN and SHAP.</p>
+          </li>
+          <li data-lane="proj" data-start="2026-04" data-end="2026-06">
+            <h3 data-i18n="path.hhe.t">Marine litter hazard assessment</h3>
+            <p class="ev-meta mono" data-i18n="path.hhe.d">Lab project · Apr – Jun 2026</p>
+            <p class="ev-desc" data-i18n="path.hhe.x">Environmental data analysis and an interactive map dashboard on marine litter along the Sardinian coast.</p>
+          </li>
+          <li data-lane="gov" data-start="2025-10" data-end="2026-10">
+            <h3 data-i18n="path.svolta.t">Member — Svoltastudenti</h3>
+            <p class="ev-meta mono" data-i18n="path.svolta.d">National student association · since Oct 2025</p>
+            <p class="ev-desc" data-i18n="path.svolta.x">Member of Svoltastudenti, the largest student association in Italy, focused on university governance.</p>
           </li>
           <li data-lane="next" data-start="2026-11" data-end="2026-11" data-marker="07">
             <h3 data-i18n="path.next.t">Available</h3>
@@ -301,7 +322,7 @@
 
   <!-- statistiche anonime, senza cookie (GoatCounter) -->
   <script data-goatcounter="https://daniele-u22.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
-  <script src="i18n.js?v=202610020956"></script>
-  <script src="main.js?v=202610020956"></script>
+  <script src="i18n.js?v=202610021013"></script>
+  <script src="main.js?v=202610021013"></script>
 </body>
 </html>
