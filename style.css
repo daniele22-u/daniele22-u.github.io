@@ -334,6 +334,21 @@ img { max-width: 100%; display: block; }
 .name-mark { width: 0.3em; height: 0.3em; flex: none; animation: spin 14s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* freccia "scorri" (solo su schermi stretti) */
+.scroll-cue {
+  display: none;
+  position: absolute; left: 50%; bottom: 14px; z-index: 2;
+  width: 44px; height: 44px; margin-left: -22px;
+  place-items: center; border: 1px solid var(--line); border-radius: 50%;
+  background: var(--bg); color: var(--fg);
+  animation: cue-bounce 1.8s ease-in-out infinite;
+  transition: opacity .4s ease;
+}
+.scroll-cue svg { width: 20px; height: 20px; }
+.scroll-cue.gone { opacity: 0; pointer-events: none; }
+@keyframes cue-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+@media (max-width: 860px) { .scroll-cue { display: grid; } }
+
 /* ============ PORTRAIT ============ */
 .portrait {
   display: grid;

@@ -43,6 +43,14 @@
     if (reduceMotion) typed.textContent = words[0]; else tick();
   }
 
+  /* ---------- freccia "scorri": sparisce appena si inizia a scorrere ---------- */
+  const cue = document.querySelector('.scroll-cue');
+  if (cue) {
+    const onScroll = () => cue.classList.toggle('gone', window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
   /* ---------- marquee ---------- */
   const CHANNELS = ['Fp1','Fp2','AF3','AF4','F7','F3','Fz','F4','F8','FT7','FC3','FCz','FC4','FT8','T7','C3','Cz','C4','T8','TP7','CP3','CPz','CP4','TP8','P7','P3','Pz','P4','P8','PO7','PO3','POz','PO4','PO8','O1','Oz','O2'];
   document.querySelectorAll('.marquee .track').forEach(track => {
