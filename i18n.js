@@ -52,6 +52,7 @@ window.I18N_IT = {
 
   'w.code': 'Vedi il codice',
   'w.demo': 'Demo live',
+  'w.with': 'con',
 
   'w.mri.l': 'IMAGING',
   'w.mri.t': 'Segmentazione di lesioni cerebrali (MRI)',
