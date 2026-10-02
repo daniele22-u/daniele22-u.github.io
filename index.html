@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=202610020929">
+  <link rel="stylesheet" href="style.css?v=202610020956">
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -126,6 +126,7 @@
             <h2 data-i18n="w.icu.t">ICU mortality prediction</h2>
             <p data-i18n="w.icu.b">A clinical prediction pipeline on intensive-care vital-sign time series: feature engineering, gradient boosting, 1D-CNNs and ensembles, patient-subgroup analysis and SHAP-based interpretability.</p>
             <a class="ch-link mono" href="https://github.com/daniele22-u/smart_hospital_polimi" data-goatcounter-click="code-icu" target="_blank" rel="noopener"><span data-i18n="w.code">View code</span> →</a>
+            <a class="ch-link mono" href="https://daniele22-u.github.io/smart_hospital_polimi/dashboard/" data-goatcounter-click="demo-icu" target="_blank" rel="noopener"><span data-i18n="w.demo">Live demo</span> ↗</a>
           </div>
         </article>
         <article class="ch" data-wave="nda">
@@ -193,16 +194,88 @@
 
     <!-- ============ PATH ============ -->
     <section class="path" id="path">
-      <h2 class="section-title mono">// <span data-i18n="path.title" class="plain">Path</span> <span>— <span data-i18n="path.sub">no fluff</span></span></h2>
-      <ol class="timeline">
-        <li><span class="idx mono">01</span><div><h3 data-i18n="path.1.t">MSc Biomedical Engineering — Bioinformatics track</h3><p class="mono" data-i18n="path.1.d">Politecnico di Milano · Sept 2024 – Oct 2026 (expected) · weighted average 28.02/30</p></div></li>
-        <li><span class="idx mono">02</span><div><h3 data-i18n="path.2.t">Master's thesis researcher — deep learning for EEG decoding</h3><p class="mono" data-i18n="path.2.d">Politecnico di Milano · Nov 2025 – Oct 2026</p></div></li>
-        <li><span class="idx mono">03</span><div><h3 data-i18n="path.3.t">Capstone project — SXT S.r.l. Telemedicine Systems</h3><p class="mono" data-i18n="path.3.d">Milan · Sept 2025 – Feb 2026</p></div></li>
-        <li><span class="idx mono">04</span><div><h3 data-i18n="path.4.t">Bachelor's thesis researcher — Łódź University of Technology</h3><p class="mono" data-i18n="path.4.d">Łódź, Poland · Feb – Jul 2024 · Erasmus programme</p></div></li>
-        <li><span class="idx mono">05</span><div><h3 data-i18n="path.5.t">BSc Biomedical Engineering</h3><p class="mono" data-i18n="path.5.d">Università di Cagliari · Sept 2021 – Sept 2024 · final grade 105/110</p></div></li>
-        <li><span class="idx mono">06</span><div><h3 data-i18n="path.6.t">Elected student representative</h3><p class="mono" data-i18n="path.6.d">Politecnico di Milano &amp; Università di Cagliari · 2022 – 2026 · departmental committees at DEIB · Svoltastudenti member since 2022</p></div></li>
-        <li><span class="idx mono">07</span><div><h3 data-i18n="path.7.t">Languages &amp; certifications</h3><p class="mono" data-i18n="path.7.d">Italian — native · English — C1 (IELTS Academic) · Spanish — A2 · Claude 101 — Anthropic</p></div></li>
+      <h2 class="section-title mono">// <span data-i18n="path.title" class="plain">Path</span> <span>— <span data-i18n="path.sub">recording 2021 → 2026</span></span></h2>
+
+      <div class="tl-scroll">
+        <div class="tl">
+          <div class="tl-head mono" aria-hidden="true"><span><i class="rec-dot"></i> REC</span><span data-i18n="path.hint">click a marker or a band</span></div>
+          <div class="tl-plot">
+            <canvas class="tl-trace" aria-hidden="true"></canvas>
+            <div class="tl-markers"></div>
+          </div>
+          <div class="tl-axis mono" aria-hidden="true"></div>
+          <div class="tl-lanes">
+          <div class="lane" data-lane="edu"><span class="lane-name mono" data-i18n="path.lane.edu">Education</span></div>
+          <div class="lane" data-lane="res"><span class="lane-name mono" data-i18n="path.lane.res">Research</span></div>
+          <div class="lane" data-lane="work"><span class="lane-name mono" data-i18n="path.lane.work">Industry</span></div>
+          <div class="lane" data-lane="proj"><span class="lane-name mono" data-i18n="path.lane.proj">Projects</span></div>
+          <div class="lane" data-lane="gov"><span class="lane-name mono" data-i18n="path.lane.gov">Student gov.</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="tl-swipe mono" aria-hidden="true">← swipe →</p>
+
+      <div class="tl-detail" aria-live="polite"></div>
+
+      <ol class="tl-data">
+          <li data-lane="edu" data-start="2021-09" data-end="2024-09" data-marker="01">
+            <h3 data-i18n="path.bsc.t">BSc Biomedical Engineering</h3>
+            <p class="ev-meta mono" data-i18n="path.bsc.d">Università di Cagliari · Sept 2021 – Sept 2024</p>
+            <p class="ev-desc" data-i18n="path.bsc.x">Bachelor's degree at the University of Cagliari, final grade 105/110. Included a five-month Erasmus research period in Poland.</p>
+          </li>
+          <li data-lane="gov" data-start="2022-01" data-end="2026-10" data-marker="02">
+            <h3 data-i18n="path.rep.t">Elected student representative</h3>
+            <p class="ev-meta mono" data-i18n="path.rep.d">Università di Cagliari → Politecnico di Milano · 2022 – 2026</p>
+            <p class="ev-desc" data-i18n="path.rep.x">Four years as an elected representative, first in Cagliari and then at PoliMi, sitting on departmental committees at DEIB. Member of Svoltastudenti, the national student association, since 2022.</p>
+          </li>
+          <li data-lane="res" data-start="2024-02" data-end="2024-07" data-marker="03">
+            <h3 data-i18n="path.lodz.t">Bachelor's thesis — Łódź University of Technology</h3>
+            <p class="ev-meta mono" data-i18n="path.lodz.d">Łódź, Poland · Feb – Jul 2024 · Erasmus</p>
+            <p class="ev-desc" data-i18n="path.lodz.x">Designed the experimental protocol and analysed pressure-platform and centre-of-pressure data to study how virtual reality perturbs human balance, in an international lab.</p>
+          </li>
+          <li data-lane="edu" data-start="2024-09" data-end="2026-10" data-marker="04">
+            <h3 data-i18n="path.msc.t">MSc Biomedical Engineering — Bioinformatics track</h3>
+            <p class="ev-meta mono" data-i18n="path.msc.d">Politecnico di Milano · Sept 2024 – Oct 2026 (expected)</p>
+            <p class="ev-desc" data-i18n="path.msc.x">Master's degree at Politecnico di Milano, bioinformatics track, weighted average 28.02/30.</p>
+          </li>
+          <li data-lane="proj" data-start="2024-10" data-end="2025-01">
+            <h3 data-i18n="path.sleep.t">EEG sleep stage analysis</h3>
+            <p class="ev-meta mono" data-i18n="path.sleep.d">Course project · Oct 2024 – Jan 2025</p>
+            <p class="ev-desc" data-i18n="path.sleep.x">Automated sleep-stage classification from overnight EEG.</p>
+          </li>
+          <li data-lane="proj" data-start="2024-12" data-end="2025-02">
+            <h3 data-i18n="path.mri.t">Brain lesion segmentation (MRI)</h3>
+            <p class="ev-meta mono" data-i18n="path.mri.d">Course project · Dec 2024 – Feb 2025</p>
+            <p class="ev-desc" data-i18n="path.mri.x">Segmentation of brain lesions in T1-weighted MRI volumes.</p>
+          </li>
+          <li data-lane="proj" data-start="2025-04" data-end="2025-06">
+            <h3 data-i18n="path.narco.t">Narcolepsy event monitoring</h3>
+            <p class="ev-meta mono" data-i18n="path.narco.d">Course project · Apr – Jun 2025</p>
+            <p class="ev-desc" data-i18n="path.narco.x">Python GUI to monitor and predict narcolepsy events.</p>
+          </li>
+          <li data-lane="work" data-start="2025-09" data-end="2026-02" data-marker="05">
+            <h3 data-i18n="path.sxt.t">Capstone project — SXT S.r.l.</h3>
+            <p class="ev-meta mono" data-i18n="path.sxt.d">Telemedicine systems · Milan · Sept 2025 – Feb 2026</p>
+            <p class="ev-desc" data-i18n="path.sxt.x">Designed and developed an algorithm for a telemedicine platform, working with the company team. Under NDA.</p>
+          </li>
+          <li data-lane="res" data-start="2025-11" data-end="2026-10" data-marker="06">
+            <h3 data-i18n="path.thesis.t">Master's thesis — deep learning for EEG decoding</h3>
+            <p class="ev-meta mono" data-i18n="path.thesis.d">Politecnico di Milano, DEIB · Nov 2025 – Oct 2026</p>
+            <p class="ev-desc" data-i18n="path.thesis.x">Designing and training deep learning models that decode EEG signals end-to-end. Details after the defence.</p>
+          </li>
+          <li data-lane="proj" data-start="2026-03" data-end="2026-06">
+            <h3 data-i18n="path.icu.t">ICU mortality prediction</h3>
+            <p class="ev-meta mono" data-i18n="path.icu.d">Course project · Mar – Jun 2026</p>
+            <p class="ev-desc" data-i18n="path.icu.x">Mortality prediction on ICU vital signs with XGBoost, 1D-CNN and SHAP.</p>
+          </li>
+          <li data-lane="next" data-start="2026-11" data-end="2026-11" data-marker="07">
+            <h3 data-i18n="path.next.t">Available</h3>
+            <p class="ev-meta mono" data-i18n="path.next.d">From November 2026</p>
+            <p class="ev-desc" data-i18n="path.next.x">Open to new opportunities after graduation. <a href="#contact">Get in touch →</a></p>
+          </li>
       </ol>
+
+      <p class="tl-extra mono"><span data-i18n="path.lang">Languages</span> — <span data-i18n="path.lang.v">Italian (native) · English C1, IELTS Academic · Spanish A2</span><br><span data-i18n="path.cert">Certifications</span> — IELTS Academic · Claude 101, Anthropic</p>
     </section>
 
   </main>
@@ -228,7 +301,7 @@
 
   <!-- statistiche anonime, senza cookie (GoatCounter) -->
   <script data-goatcounter="https://daniele-u22.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
-  <script src="i18n.js?v=202610020929"></script>
-  <script src="main.js?v=202610020929"></script>
+  <script src="i18n.js?v=202610020956"></script>
+  <script src="main.js?v=202610020956"></script>
 </body>
 </html>

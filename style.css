@@ -418,6 +418,7 @@ img { max-width: 100%; display: block; }
   transition: color .2s, border-color .2s;
 }
 .ch-link:hover { color: var(--accent); border-color: var(--accent); }
+.ch-link + .ch-link { margin-left: 18px; }
 .ch-note { color: var(--accent); font-size: 10px !important; margin-top: 14px !important; }
 
 /* ============ SKILLS ============ */
@@ -460,17 +461,99 @@ img { max-width: 100%; display: block; }
 .band p { margin: 0; font-size: 21px; }
 
 /* ============ PATH ============ */
-.timeline { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
-.timeline li {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 20px;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--line);
+/* timeline: traccia + corsie */
+.tl-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  -webkit-overflow-scrolling: touch;
 }
-.idx { font-size: 22px; color: var(--fg-dim); letter-spacing: 0; }
-.timeline h3 { margin: 0 0 4px; font-weight: 400; font-size: clamp(21px, 2.4vw, 28px); line-height: 1.25; }
-.timeline p { margin: 0; color: var(--fg-dim); text-transform: none; letter-spacing: 0.03em; }
+.tl { --lpad: 128px; --rpad: 28px; position: relative; min-width: 880px; padding-bottom: 14px; }
+.tl-head {
+  display: flex; justify-content: space-between;
+  padding: 10px 14px; font-size: 10px; color: var(--fg-dim);
+  border-bottom: 1px solid var(--line-soft);
+}
+.tl-plot { position: relative; height: 150px; margin: 0 var(--rpad) 0 var(--lpad); }
+.tl-trace { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.tl-markers { position: absolute; inset: 0; }
+
+.mk {
+  position: absolute; top: 0; bottom: 0; width: 30px; margin-left: -15px;
+  left: calc(var(--x) * 100%);
+  background: none; border: 0; padding: 0; cursor: pointer; color: var(--fg-dim);
+  opacity: 0; transition: opacity .4s ease;
+}
+.mk.shown { opacity: 1; }
+.mk::before {
+  content: ""; position: absolute; left: 50%; top: 34px; bottom: 0; width: 0;
+  border-left: 1px dashed var(--line);
+}
+.mk-n {
+  position: absolute; left: 50%; top: 8px; transform: translateX(-50%);
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.04em;
+  padding: 3px 5px; border: 1px solid var(--line); background: var(--bg-2);
+  transition: background .2s, color .2s, border-color .2s;
+}
+.mk.row2 .mk-n { top: 34px; }
+.mk.row2::before { top: 58px; }
+.mk:hover .mk-n, .mk:focus-visible .mk-n { border-color: var(--fg); color: var(--fg); }
+.mk.on .mk-n { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.mk.on::before { border-left: 1px solid var(--accent); }
+
+.tl-axis {
+  position: relative; height: 26px; margin: 0 var(--rpad) 0 var(--lpad);
+  border-top: 1px solid var(--line); font-size: 10px; color: var(--fg-dim);
+}
+.tl-axis span { position: absolute; top: 0; padding-top: 6px; transform: translateX(-50%); }
+.tl-axis span::before { content: ""; position: absolute; left: 50%; top: -1px; height: 5px; border-left: 1px solid var(--fg-dim); }
+
+.lane { position: relative; display: flex; border-top: 1px solid var(--line-soft); }
+.lane-name {
+  position: sticky; left: 0; z-index: 2; flex: 0 0 var(--lpad);
+  display: flex; align-items: center; padding-left: 14px;
+  background: var(--bg-2); font-size: 10px; color: var(--fg-dim); white-space: nowrap;
+}
+.lane-track { position: relative; flex: 1; margin-right: var(--rpad); height: calc(var(--rows, 1) * 16px + 14px); }
+.tl-bar {
+  position: absolute; height: 10px; min-width: 8px;
+  left: calc(var(--x) * 100%); width: calc(var(--w) * 100%);
+  top: calc(7px + var(--row, 0) * 16px);
+  border: 0; padding: 0; cursor: pointer;
+  background: var(--trace); opacity: .55;
+  transition: opacity .2s, background .2s, transform .2s;
+}
+.tl-bar:hover, .tl-bar:focus-visible { opacity: 1; }
+.tl-bar.on { background: var(--accent); opacity: 1; }
+
+.tl-now {
+  position: absolute; top: 37px; bottom: 14px; width: 0;
+  left: calc(var(--lpad) + var(--x) * (100% - var(--lpad) - var(--rpad)));
+  border-left: 1px solid var(--rec); pointer-events: none;
+}
+.tl-now span {
+  position: absolute; bottom: 3px; left: 5px;
+  font-family: var(--f-mono); font-size: 9px; color: var(--rec); letter-spacing: .1em;
+}
+
+.tl-swipe { display: none; text-align: center; font-size: 10px; color: var(--fg-dim); margin: 8px 0 0; }
+
+.tl-detail {
+  display: grid; grid-template-columns: 72px 1fr; gap: 20px; align-items: start;
+  min-height: 150px; padding: 26px 24px;
+  border: 1px solid var(--line); border-top: 0;
+}
+.tl-detail .d-n { font-family: var(--f-mono); font-size: 28px; color: var(--accent); line-height: 1; }
+.tl-detail h3 { margin: 0 0 6px; font-weight: 400; font-size: clamp(22px, 2.6vw, 30px); line-height: 1.2; }
+.tl-detail .ev-meta { margin: 0 0 12px; color: var(--fg-dim); text-transform: none; letter-spacing: .03em; }
+.tl-detail .ev-desc { margin: 0; font-size: 19px; max-width: 70ch; }
+.tl-detail a { color: var(--accent); }
+
+.tl-data {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0;
+}
+.tl-extra { margin: 20px 0 0; color: var(--fg-dim); text-transform: none; letter-spacing: .03em; line-height: 1.9; }
 
 /* ============ CONTACT ============ */
 .contact { border-top: 1px solid var(--line); }
@@ -542,8 +625,9 @@ img { max-width: 100%; display: block; }
   .nav a[href="#path"] { display: none; }
   .eeg-hud { gap: 12px; right: 16px; }
   .eeg-hud span:nth-child(2) { display: none; }
-  .timeline li { grid-template-columns: 44px 1fr; gap: 12px; }
-  .idx { font-size: 16px; }
+  .tl-swipe { display: block; }
+  .tl-detail { grid-template-columns: 1fr; gap: 8px; padding: 20px 16px; }
+  .tl-detail .ev-desc { font-size: 17px; }
   .contact-grid { grid-template-columns: 1fr; }
   .contact-grid .cell { border-right: 0; }
   .contact-grid .cell + .cell { border-top: 1px solid var(--line); }
@@ -559,3 +643,9 @@ img { max-width: 100%; display: block; }
 
 .legal a { color: var(--fg); transition: color .2s; }
 .legal a:hover { color: var(--accent); }
+
+@media (max-width: 940px) {
+  .tl { --lpad: 104px; min-width: 820px; }
+  .tl-swipe { display: block; margin-bottom: 8px; }
+  .tl-detail { border-top: 1px solid var(--line); }
+}
