@@ -282,7 +282,7 @@ def page(p, prev_p, next_p):
     <nav class="pj-nav" aria-label="More projects">{nav}</nav>
   </main>
 
-  <footer class="legal mono pj-foot"><span>© 2026 Daniele Uras · <a href="../privacy.html">Privacy</a></span><a href="../">daniele22-u.github.io</a></footer>
+  <footer class="legal mono pj-foot"><span>© 2026 Daniele Uras · <a href="../privacy.html">Privacy &amp; legal</a></span><a href="../">daniele22-u.github.io</a></footer>
 
   <script>
     document.querySelector('.pj-lang').addEventListener('click', function () {{
