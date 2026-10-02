@@ -87,7 +87,8 @@ window.I18N_IT = {
   'contact.where': 'Milano / Remoto / UTC+1',
   'contact.cv': 'Scarica il CV (PDF)',
 
-  'legal.vibe': 'Vibe coded con'
+  'legal.vibe': 'Vibe coded con',
+  'legal.privacy': 'statistiche anonime, nessun cookie'
 };
 
 (() => {
