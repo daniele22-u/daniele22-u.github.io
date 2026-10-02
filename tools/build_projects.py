@@ -140,7 +140,7 @@ PROJECTS = [
         ],
     ),
     dict(
-        slug="sleep-staging", wave="eeg", ch="CH-08", label=("EEG", "EEG"),
+        slug="sleep-staging", wave="eeg", ch="CH-05", label=("EEG", "EEG"),
         title=("EEG sleep stage analysis", "Analisi delle fasi del sonno da EEG"),
         meta=("Signal Processing and Medical Images course · Politecnico di Milano · Oct 2024 – Jan 2025",
               "Corso Signal Processing and Medical Images · Politecnico di Milano · ott 2024 – gen 2025"),
@@ -181,7 +181,7 @@ PROJECTS = [
         ],
     ),
     dict(
-        slug="vr-balance", wave="cop", ch="CH-05", label=("BIOMECHANICS", "BIOMECCANICA"),
+        slug="vr-balance", wave="cop", ch="CH-08", label=("BIOMECHANICS", "BIOMECCANICA"),
         title=("Virtual reality & human balance", "Realtà virtuale & equilibrio"),
         meta=("Bachelor’s thesis · Erasmus at Łódź University of Technology · Feb – Jul 2024",
               "Tesi triennale · Erasmus alla Łódź University of Technology · feb – lug 2024"),
@@ -298,7 +298,7 @@ def page(p, prev_p, next_p):
 '''
 
 
-ORDER = ['thesis', 'icu', 'telemedicine', 'marine-litter', 'vr-balance', 'narcolepsy', 'brain-lesion-segmentation', 'sleep-staging']
+ORDER = ['thesis', 'icu', 'telemedicine', 'marine-litter', 'sleep-staging', 'narcolepsy', 'brain-lesion-segmentation', 'vr-balance']
 
 
 def main():
