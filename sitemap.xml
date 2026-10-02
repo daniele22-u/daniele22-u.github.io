@@ -7,6 +7,11 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://daniele22-u.github.io/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
     <loc>https://daniele22-u.github.io/smart_hospital_polimi/dashboard/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
