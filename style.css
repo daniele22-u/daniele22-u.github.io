@@ -109,6 +109,7 @@
   --line-soft: rgba(255, 255, 255, 0.06);
   --rec: #ff3b30;
   --accent: #7cf0c5;
+  --cold: #8c9bff;
   --trace: rgba(230, 230, 230, 0.55);
 
   --f-display: "Anton", "Impact", sans-serif;
@@ -128,6 +129,7 @@
   --line-soft: rgba(0, 0, 0, 0.06);
   --rec: #d92a20;
   --accent: #0a8f63;
+  --cold: #4257d6;
   --trace: rgba(20, 20, 20, 0.55);
   color-scheme: light;
 }
@@ -373,15 +375,14 @@ img { max-width: 100%; display: block; }
 .frame-bar { border-bottom: 1px solid var(--line); }
 .frame-foot { border-top: 1px solid var(--line); }
 
+#ascii-status { text-transform: none; }
 #ascii {
   width: 100%;
   aspect-ratio: 1 / 1;
   height: auto;
   display: block;
-  cursor: grab;
-  touch-action: pan-y;
+  cursor: crosshair;
 }
-#ascii.grab { cursor: grabbing; }
 
 /* ============ ABOUT (stanza in prospettiva) ============ */
 .about {
