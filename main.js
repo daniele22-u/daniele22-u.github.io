@@ -187,101 +187,159 @@
     themeListeners.push(redraw);
   }
 
-  /* ---------- MONTAGE: testa EEG in ASCII (sistema 10-20), al posto della foto ---------- */
-  const ascii = document.getElementById('ascii');
+  /* ---------- HEAD 3D: nuvola di punti con elettrodi 10-20 e onde di attività ---------- */
+  const head = document.getElementById('ascii');
   const status = document.getElementById('ascii-status');
-  if (ascii) {
-    const RAMP = ' .·:-=+*#%@';
-    // posizioni 2D (proiezione dall'alto): x verso destra, y verso la nuca; naso in alto
-    const ELEC = [
-      ['Fp1',-.31,-.95],['Fpz',0,-1],['Fp2',.31,-.95],['AF3',-.33,-.77],['AF4',.33,-.77],
-      ['F7',-.81,-.59],['F3',-.42,-.52],['Fz',0,-.5],['F4',.42,-.52],['F8',.81,-.59],
+  if (head) {
+    const R3 = rng(2026);
+    const PTS = [];
+    // cuoio capelluto: punti di Fibonacci su un ellissoide (x laterale, y avanti(-)/dietro(+), z verticale)
+    const N = 900, GA = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < N; i++) {
+      const z = 1 - (i + .5) / N * 1.45;            // dalla sommità fin sotto le orecchie
+      const r = Math.sqrt(Math.max(0, 1 - z * z));
+      const a = i * GA;
+      const y = Math.sin(a) * r;
+      // cranio: più largo dietro, più stretto sulla fronte
+      PTS.push([Math.cos(a) * r * (.8 + .06 * y), y * 1.08, z * .95, 0]);
+    }
+    // viso: fronte e mascella che scendono davanti
+    for (let i = 0; i < 160; i++) {
+      const u = R3(), v = (R3() - .5) * 2.1;
+      const zz = -.35 - u * .6, width = .62 * (1 - u * .45);
+      PTS.push([Math.sin(v) * width, -Math.cos(v) * .95 * (1 - u * .12), zz, 1]);
+    }
+    // naso (davanti, y negativo)
+    for (let i = 0; i < 90; i++) {
+      const v = R3() * 6.2832, l = R3();
+      const rad = (1 - l) * .1;
+      PTS.push([Math.cos(v) * rad, -.98 - l * .3 * (1 - l * .3), -.3 + l * .12 + Math.sin(v) * rad * .8, 1]);
+    }
+    // orecchie
+    for (const sx of [-1, 1]) for (let i = 0; i < 70; i++) {
+      const v = R3() * 6.2832, rr = .4 + .6 * R3();
+      PTS.push([sx * (.86 + .05 * R3()), Math.cos(v) * .12 * rr + .05, -.22 + Math.sin(v) * .24 * rr, 1]);
+    }
+    // elettrodi: coordinate dall'alto (x destra, y nuca) proiettate sulla calotta
+    const E2 = [
+      ['Fp1',-.31,-.95],['Fp2',.31,-.95],['F7',-.81,-.59],['F3',-.42,-.52],['Fz',0,-.5],['F4',.42,-.52],['F8',.81,-.59],
       ['FC5',-.62,-.27],['FC1',-.2,-.25],['FC2',.2,-.25],['FC6',.62,-.27],
       ['T7',-1,0],['C3',-.5,0],['Cz',0,0],['C4',.5,0],['T8',1,0],
       ['CP5',-.62,.27],['CP1',-.2,.25],['CP2',.2,.25],['CP6',.62,.27],
       ['P7',-.81,.59],['P3',-.42,.52],['Pz',0,.5],['P4',.42,.52],['P8',.81,.59],
-      ['PO3',-.33,.77],['PO4',.33,.77],['O1',-.31,.95],['Oz',0,1],['O2',.31,.95]
-    ].map(([n, x, y], i) => ({ n, x: x * .84, y: y * .84, f: .5 + (i * 37 % 11) / 10, p: i * 1.7 }));
-    // coppie candidate per le connessioni (elettrodi vicini)
-    const PAIRS = [];
-    for (let a = 0; a < ELEC.length; a++) for (let b = a + 1; b < ELEC.length; b++) {
-      const d = Math.hypot(ELEC[a].x - ELEC[b].x, ELEC[a].y - ELEC[b].y);
-      if (d < .62) PAIRS.push([a, b, (a * 7 + b * 13) % 17 / 2.7]);
+      ['O1',-.31,.95],['Oz',0,1],['O2',.31,.95]
+    ];
+    const EL = E2.map(([n, x, y], k) => {
+      const rr = Math.hypot(x, y), th = rr * Math.PI / 2 * .92, ph = Math.atan2(y, x);
+      const sy = Math.sin(th) * Math.sin(ph); const v = [Math.sin(th) * Math.cos(ph) * (.8 + .06 * sy), sy * 1.08, Math.cos(th) * .95];
+      const L = Math.hypot(v[0], v[1], v[2]);
+      return { n, v, u: [v[0] / L, v[1] / L, v[2] / L], f: .6 + (k * 37 % 11) / 12, p: k * 1.3 };
+    });
+    const EDGES = [];
+    for (let a = 0; a < EL.length; a++) for (let b = a + 1; b < EL.length; b++) {
+      const d = Math.hypot(EL[a].v[0] - EL[b].v[0], EL[a].v[1] - EL[b].v[1], EL[a].v[2] - EL[b].v[2]);
+      if (d < .55) EDGES.push([a, b, (a * 7 + b * 13) % 17 / 2.7]);
     }
-    const frame = ascii.parentElement;
-    let S = null, cols = 0, rows = 0, cw = 0, chh = 0, t0 = null, last = -1, hover = false;
-    const gauss = (d2, s) => Math.exp(-d2 / (2 * s * s));
-    const segDist2 = (px, py, ax, ay, bx, by) => {
-      const vx = bx - ax, vy = by - ay, k = Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / (vx * vx + vy * vy)));
-      const dx = px - ax - k * vx, dy = py - ay - k * vy; return dx * dx + dy * dy;
-    };
-    const fit = () => {
-      S = fitCanvas(ascii);
-      cols = Math.max(30, Math.round(S.w / 6.6));
-      cw = S.w / cols; chh = cw / .6;
-      rows = Math.floor(S.h / chh);
-    };
+    const unit = PTS.map(p => { const L = Math.hypot(p[0], p[1], p[2]) || 1; return [p[0] / L, p[1] / L, p[2] / L]; });
+
+    // rotazione: automatica + trascinamento con inerzia
+    let yaw = .55, pitch = .75, vYaw = 0, vPitch = 0, dragging = false, lx = 0, ly = 0, lastT = null;
+    const frame = head.parentElement;
+    head.addEventListener('pointerdown', (e) => { dragging = true; lx = e.clientX; ly = e.clientY; vYaw = vPitch = 0; head.setPointerCapture(e.pointerId); head.classList.add('grab'); });
+    head.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - lx, dy = e.clientY - ly; lx = e.clientX; ly = e.clientY;
+      vYaw = dx * .008; vPitch = dy * .006;
+      yaw += vYaw; pitch = Math.max(-.4, Math.min(1.3, pitch + vPitch));
+    });
+    const endDrag = () => { dragging = false; head.classList.remove('grab'); };
+    head.addEventListener('pointerup', endDrag);
+    head.addEventListener('pointercancel', endDrag);
+
+    // onde: partono da un elettrodo e si propagano sulla superficie
+    const waves = [];
+    let nextWave = 0.5;
+    let S = null;
     const draw = (t) => {
-      if (!S) fit();
-      if (t - last < 1 / 30 && last >= 0) return;   // ~30 fps bastano
-      last = t;
-      if (t0 === null) t0 = t;
+      if (!S) S = fitCanvas(head);
+      const dt = lastT === null ? 0 : Math.min(.05, t - lastT); lastT = t;
+      if (!dragging) {
+        yaw += (reduceMotion ? 0 : .18) * dt + vYaw; vYaw *= .94;
+        pitch = Math.max(-.4, Math.min(1.3, pitch + vPitch)); vPitch *= .9;
+      }
+      if (t > nextWave && !reduceMotion) {
+        const src = EL[Math.floor(R3() * EL.length)];
+        waves.push({ u: src.u, t0: t, src });
+        nextWave = t + 2.2 + R3() * 1.6;
+      }
+      while (waves.length && t - waves[0].t0 > 3.2) waves.shift();
+
       const { ctx, w, h } = S;
-      const cx = w / 2, cy = h / 2 + chh * .4, R = Math.min(w, h) * .38;
-      const reveal = reduceMotion ? rows : Math.min(rows, Math.floor((t - t0) / 1.8 * rows));
-      const act = ELEC.map(el => .55 + .45 * Math.sin(t * el.f + el.p));
       ctx.clearRect(0, 0, w, h);
-      ctx.font = `${Math.ceil(chh * .95)}px "JetBrains Mono", monospace`;
-      ctx.textBaseline = 'top';
-      for (let r = 0; r < reveal; r++) {
-        for (let c = 0; c < cols; c++) {
-          const x = (c * cw + cw / 2 - cx) / R, y = (r * chh + chh / 2 - cy) / R;
-          const rr = Math.hypot(x, y);
-          let v = gauss((rr - 1) * (rr - 1), .028);                        // contorno della testa
-          v = Math.max(v, gauss(Math.min(segDist2(x, y, -.13, -.99, 0, -1.16), segDist2(x, y, .13, -.99, 0, -1.16)), .025)); // naso
-          const ex = (Math.abs(x) - 1.05) / .055, ey = y / .17;            // orecchie
-          v = Math.max(v, gauss((Math.hypot(ex, ey) - 1) * (Math.hypot(ex, ey) - 1), .22) * (Math.abs(x) > 1 ? 1 : 0));
-          if (rr < .97 && (r + c) % 3 === 0) v = Math.max(v, .1);         // trama interna
-          let hot = false;
-          for (let k = 0; k < ELEC.length; k++) {
-            const dx = x - ELEC[k].x, dy = y - ELEC[k].y, d2 = dx * dx + dy * dy;
-            if (d2 > .03) continue;
-            const e = act[k] * gauss(d2, .058);
-            if (e > v) { v = e; hot = act[k] > .88 && e > .5; }
-          }
-          if (v < .08) continue;
-          const ch = RAMP[Math.min(RAMP.length - 1, Math.floor(v * RAMP.length))];
-          ctx.fillStyle = hot ? colors.accent : colors.fg;
-          ctx.fillText(ch, c * cw, r * chh);
+      const cx = w / 2, cy = h / 2 + h * .06, sc = Math.min(w, h) * .32, cam = 3.4;
+      const cyw = Math.cos(yaw), syw = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+      const proj = (x, y, z) => {
+        // rotazione attorno all'asse verticale (yaw) poi inclinazione (pitch)
+        const x1 = x * cyw - y * syw, y1 = x * syw + y * cyw;
+        const y2 = y1 * cp - z * sp, z2 = y1 * sp + z * cp;
+        const k = cam / (cam + y2);
+        return [cx + x1 * sc * k, cy - z2 * sc * k, y2, k];
+      };
+      const waveAt = (u) => {
+        let e = 0;
+        for (const wv of waves) {
+          const ang = Math.acos(Math.max(-1, Math.min(1, u[0] * wv.u[0] + u[1] * wv.u[1] + u[2] * wv.u[2])));
+          const front = (t - wv.t0) * 1.15;
+          const d = ang - front;
+          e = Math.max(e, Math.exp(-d * d / .018) * Math.max(0, 1 - (t - wv.t0) / 3.2));
         }
+        return e;
+      };
+      const fg = colors.fg, acc = colors.accent;
+      // punti (dietro più tenui, davanti più luminosi)
+      for (let i = 0; i < PTS.length; i++) {
+        const p = PTS[i];
+        const [X, Y, depth, k] = proj(p[0], p[1], p[2]);
+        const front = Math.max(0, Math.min(1, (1 - depth) / 2));
+        const e = p[3] === 0 ? waveAt(unit[i]) : 0;
+        ctx.globalAlpha = .12 + .55 * front + .35 * e;
+        ctx.fillStyle = e > .25 ? acc : fg;
+        const s = (p[3] === 2 ? .8 : 1.1) * k + e * 1.6;
+        ctx.fillRect(X - s / 2, Y - s / 2, s, s);
       }
-      if (reveal < rows) { ctx.fillStyle = colors.accent; ctx.fillRect(0, reveal * chh, w, 1.5); }
-      // al passaggio del mouse: connessioni tra elettrodi (il grafo) ed etichette
-      if (hover && reveal >= rows) {
-        ctx.lineWidth = 1;
-        for (const [a, b, ph] of PAIRS) {
-          const s = Math.sin(t * .8 + ph);
-          if (s < .45) continue;
-          ctx.globalAlpha = (s - .45) * 1.6;
-          ctx.strokeStyle = colors.accent;
-          ctx.beginPath();
-          ctx.moveTo(cx + ELEC[a].x * R, cy + ELEC[a].y * R);
-          ctx.lineTo(cx + ELEC[b].x * R, cy + ELEC[b].y * R);
-          ctx.stroke();
+      // connessioni tra elettrodi
+      const EP = EL.map(el => proj(el.v[0] * 1.02, el.v[1] * 1.02, el.v[2] * 1.02));
+      ctx.lineWidth = 1;
+      for (const [a, b, ph] of EDGES) {
+        const s = Math.sin(t * .8 + ph);
+        if (s < .55) continue;
+        const front = Math.max(0, Math.min(1, (2 - EP[a][2] - EP[b][2]) / 4));
+        ctx.globalAlpha = (s - .55) * 1.6 * (.25 + .75 * front);
+        ctx.strokeStyle = acc;
+        ctx.beginPath(); ctx.moveTo(EP[a][0], EP[a][1]); ctx.lineTo(EP[b][0], EP[b][1]); ctx.stroke();
+      }
+      // elettrodi
+      EL.forEach((el, k) => {
+        const [X, Y, depth, kk] = EP[k];
+        const front = Math.max(0, Math.min(1, (1 - depth) / 2));
+        const act = .5 + .5 * Math.sin(t * el.f + el.p);
+        const hit = waves.some(wv => wv.src === el && t - wv.t0 < .5);
+        ctx.globalAlpha = .25 + .75 * front;
+        ctx.fillStyle = hit || act > .92 ? acc : fg;
+        ctx.beginPath(); ctx.arc(X, Y, (2 + act * 1.4 + (hit ? 2.5 : 0)) * kk, 0, 6.2832); ctx.fill();
+        if (front > .55 && w > 300) {
+          ctx.globalAlpha = (front - .55) * 1.4;
+          ctx.fillStyle = colors['fg-dim'];
+          ctx.font = '9px "JetBrains Mono", monospace';
+          ctx.fillText(el.n.toUpperCase(), X + 6, Y - 6);
         }
-        ctx.globalAlpha = 1;
-        ctx.font = `9px "JetBrains Mono", monospace`;
-        ctx.fillStyle = colors['fg-dim'];
-        ELEC.forEach(el => ctx.fillText(el.n.toUpperCase(), cx + el.x * R + 6, cy + el.y * R - 12));
-      }
-      if (status) status.textContent = reveal < rows ? `scanning… ${Math.floor(reveal / rows * 100)}%` : `montage 10-20 · ${ELEC.length} ch`;
+      });
+      ctx.globalAlpha = 1;
+      if (status) status.textContent = `${EL.length} ch · ${PTS.length} pts`;
     };
-    frame.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') hover = true; });
-    frame.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hover = false; });
-    frame.addEventListener('click', () => { hover = !hover; });
-    const redraw = animateWhenVisible(ascii, draw);
-    window.addEventListener('resize', () => { fit(); last = -1; redraw(); });
-    themeListeners.push(() => { last = -1; redraw(); });
+    const redraw = animateWhenVisible(head, draw);
+    window.addEventListener('resize', () => { S = null; redraw(); });
+    themeListeners.push(redraw);
   }
 
   /* ---------- ABOUT: reveal ---------- */

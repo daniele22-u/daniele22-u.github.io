@@ -55,7 +55,7 @@
   <link rel="preload" href="assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=202610022325">
+  <link rel="stylesheet" href="style.css?v=202610031307">
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -121,11 +121,11 @@
     </section>
 
     <!-- ============ MONTAGE (al posto della foto) ============ -->
-    <section class="portrait" id="montage" aria-label="Illustration: EEG electrode montage">
+    <section class="portrait" id="montage" aria-label="Illustration: 3D head with EEG electrodes">
       <div class="portrait-frame">
-        <div class="frame-bar mono"><span>subject_001 · montage_10-20</span><span>■ □ ×</span></div>
+        <div class="frame-bar mono"><span>subject_001 · head_model_3d</span><span>■ □ ×</span></div>
         <canvas id="ascii" aria-hidden="true"></canvas>
-        <div class="frame-foot mono"><span id="ascii-status">scanning…</span><span data-i18n="portrait.hover">hover: connectivity</span></div>
+        <div class="frame-foot mono"><span id="ascii-status">loading…</span><span data-i18n="portrait.hover">drag to rotate</span></div>
       </div>
     </section>
 
@@ -386,7 +386,7 @@
 
   <!-- statistiche anonime, senza cookie (GoatCounter) -->
   <script data-goatcounter="https://daniele-u22.goatcounter.com/count" async src="assets/js/count.js"></script>
-  <script defer src="i18n.js?v=202610022325"></script>
-  <script defer src="main.js?v=202610022325"></script>
+  <script defer src="i18n.js?v=202610031307"></script>
+  <script defer src="main.js?v=202610031307"></script>
 </body>
 </html>

@@ -18,7 +18,7 @@ window.I18N_IT = {
   'status.avail': 'Disponibile da nov 2026',
   'status.cta': 'Scrivimi',
 
-  'portrait.hover': 'passa sopra: connettività',
+  'portrait.hover': 'trascina per ruotare',
 
   'about.p1': 'Sono un ingegnere biomedico e lavoro dove i segnali incontrano il machine learning. Ho fatto la triennale all’Università di Cagliari e sto concludendo la magistrale in Ingegneria Biomedica al Politecnico di Milano, indirizzo bioinformatica.',
   'about.p2': 'Quasi tutto il mio lavoro parte da una registrazione fisiologica rumorosa — un EEG, un flusso di parametri vitali, una pedana di pressione, un volume di risonanza — e finisce con un modello che deve darle un senso. Mi piace seguire tutta la catena: definire il problema, pulire i dati, costruire e validare il modello, fino al momento in cui una pipeline ti dice finalmente qualcosa di vero.',
