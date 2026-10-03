@@ -192,65 +192,115 @@
   const status = document.getElementById('ascii-status');
   if (head) {
     const R3 = rng(2026);
-    const PTS = [];
-    // cuoio capelluto: punti di Fibonacci su un ellissoide (x laterale, y avanti(-)/dietro(+), z verticale)
-    const N = 900, GA = Math.PI * (3 - Math.sqrt(5));
-    for (let i = 0; i < N; i++) {
-      const z = 1 - (i + .5) / N * 1.45;            // dalla sommità fin sotto le orecchie
-      const r = Math.sqrt(Math.max(0, 1 - z * z));
-      const a = i * GA;
-      const y = Math.sin(a) * r;
-      // cranio: più largo dietro, più stretto sulla fronte
-      PTS.push([Math.cos(a) * r * (.8 + .06 * y), y * 1.08, z * .95, 0]);
-    }
-    // viso: fronte e mascella che scendono davanti
-    for (let i = 0; i < 160; i++) {
-      const u = R3(), v = (R3() - .5) * 2.1;
-      const zz = -.35 - u * .6, width = .62 * (1 - u * .45);
-      PTS.push([Math.sin(v) * width, -Math.cos(v) * .95 * (1 - u * .12), zz, 1]);
-    }
-    // naso (davanti, y negativo)
-    for (let i = 0; i < 90; i++) {
-      const v = R3() * 6.2832, l = R3();
-      const rad = (1 - l) * .1;
-      PTS.push([Math.cos(v) * rad, -.98 - l * .3 * (1 - l * .3), -.3 + l * .12 + Math.sin(v) * rad * .8, 1]);
-    }
-    // orecchie
-    for (const sx of [-1, 1]) for (let i = 0; i < 70; i++) {
-      const v = R3() * 6.2832, rr = .4 + .6 * R3();
-      PTS.push([sx * (.86 + .05 * R3()), Math.cos(v) * .12 * rr + .05, -.22 + Math.sin(v) * .24 * rr, 1]);
-    }
-    // elettrodi: coordinate dall'alto (x destra, y nuca) proiettate sulla calotta
-    const E2 = [
-      ['Fp1',-.31,-.95],['Fp2',.31,-.95],['F7',-.81,-.59],['F3',-.42,-.52],['Fz',0,-.5],['F4',.42,-.52],['F8',.81,-.59],
-      ['FC5',-.62,-.27],['FC1',-.2,-.25],['FC2',.2,-.25],['FC6',.62,-.27],
-      ['T7',-1,0],['C3',-.5,0],['Cz',0,0],['C4',.5,0],['T8',1,0],
-      ['CP5',-.62,.27],['CP1',-.2,.25],['CP2',.2,.25],['CP6',.62,.27],
-      ['P7',-.81,.59],['P3',-.42,.52],['Pz',0,.5],['P4',.42,.52],['P8',.81,.59],
-      ['O1',-.31,.95],['Oz',0,1],['O2',.31,.95]
-    ];
-    const EL = E2.map(([n, x, y], k) => {
-      const rr = Math.hypot(x, y), th = rr * Math.PI / 2 * .92, ph = Math.atan2(y, x);
-      const sy = Math.sin(th) * Math.sin(ph); const v = [Math.sin(th) * Math.cos(ph) * (.8 + .06 * sy), sy * 1.08, Math.cos(th) * .95];
-      const L = Math.hypot(v[0], v[1], v[2]);
-      return { n, v, u: [v[0] / L, v[1] / L, v[2] / L], f: .6 + (k * 37 % 11) / 12, p: k * 1.3 };
-    });
-    const EDGES = [];
-    for (let a = 0; a < EL.length; a++) for (let b = a + 1; b < EL.length; b++) {
-      const d = Math.hypot(EL[a].v[0] - EL[b].v[0], EL[a].v[1] - EL[b].v[1], EL[a].v[2] - EL[b].v[2]);
-      if (d < .55) EDGES.push([a, b, (a * 7 + b * 13) % 17 / 2.7]);
-    }
-    const unit = PTS.map(p => { const L = Math.hypot(p[0], p[1], p[2]) || 1; return [p[0] / L, p[1] / L, p[2] / L]; });
+    // la geometria si costruisce solo la prima volta che la sezione diventa visibile
+    const build = () => {
+      // superficie implicita (x laterale, y avanti(-)/dietro(+), z verticale): primitive unite in modo morbido
+      const ell = (x, y, z, cx, cy, cz, rx, ry, rz) => {
+        const a = (x - cx) / rx, b = (y - cy) / ry, c = (z - cz) / rz;
+        const k0 = Math.sqrt(a * a + b * b + c * c), a1 = a / rx, b1 = b / ry, c1 = c / rz, k1 = Math.sqrt(a1 * a1 + b1 * b1 + c1 * c1) || 1e-6;
+        return k0 * (k0 - 1) / k1;
+      };
+      const smin = (a, b, k) => { const h = Math.max(k - Math.abs(a - b), 0) / k; return Math.min(a, b) - h * h * k / 4; };
+      const smax = (a, b, k) => -smin(-a, -b, k);
+      // cono arrotondato (dorso del naso): raggio che cresce dalla radice alla punta
+      const cone = (x, y, z, ax, ay, az, bx, by, bz, ra, rb) => {
+        const px = x - ax, py = y - ay, pz = z - az, dx = bx - ax, dy = by - ay, dz = bz - az;
+        const h = Math.max(0, Math.min(1, (px * dx + py * dy + pz * dz) / (dx * dx + dy * dy + dz * dz)));
+        const qx = px - dx * h, qy = py - dy * h, qz = pz - dz * h;
+        return Math.sqrt(qx * qx + qy * qy + qz * qz) - (ra + (rb - ra) * h);
+      };
+      const sdf = (x, y, z) => {
+        const ax = Math.abs(x);
+        let d = ell(x, y, z, 0, .06, .2, .74, .93, .84);                         // cranio
+        d = smin(d, ell(x, y, z, 0, -.3, -.42, .56, .6, .56), .3);               // viso e mascella
+        d = smin(d, ell(x, y, z, 0, -.64, -.8, .23, .22, .17), .16);             // mento
+        d = smin(d, ell(ax, y, z, .4, -.66, -.27, .17, .17, .13), .12);          // zigomi
+        d = smin(d, ell(x, y, z, 0, -.83, .0, .43, .1, .085), .1);               // arcate sopraccigliari
+        d = smax(d, -ell(ax, y, z, .27, -.97, -.12, .16, .14, .11), .06);         // orbite
+        d = smin(d, ell(ax, y, z, .27, -.8, -.13, .09, .09, .09), .02);      // bulbi oculari
+        d = smin(d, cone(x, y, z, 0, -.88, -.14, 0, -1.13, -.49, .042, .08), .06); // dorso del naso
+        d = smin(d, ell(x, y, z, 0, -1, -.54, .135, .08, .065), .05);          // pinne nasali
+        d = smin(d, ell(x, y, z, 0, -.9, -.645, .17, .06, .055), .04);          // labbra
+        d = smin(d, ell(ax, y, z, .73, .1, -.2, .06, .16, .27), .05);           // orecchie
+        const nx = x / .36, ny = (y - .14) / .4, nk = Math.sqrt(nx * nx + ny * ny) - 1;                      // collo
+        d = smin(d, Math.max(nk * .37, z + .45), .22);
+        return d;
+      };
+      const grad = (x, y, z) => {
+        const e = .003, a = sdf(x + e, y - e, z - e), b = sdf(x - e, y - e, z + e), c = sdf(x - e, y + e, z - e), d = sdf(x + e, y + e, z + e);
+        const gx = a - b - c + d, gy = -a - b + c + d, gz = -a + b - c + d;
+        const L = Math.hypot(gx, gy, gz) || 1;
+        return [gx / L, gy / L, gz / L];
+      };
+      // campionamento a "scansione": anelli orizzontali (come le fette di una TAC), punti a passo costante lungo ogni anello
+      const PTS = [], NRM = [], SCALP = [], C0 = [0, .06, .2];
+      const ZMIN = -1.45, ZMAX = 1.03, DZ = .052, DS = .034, NA = 300;
+      for (let z = ZMAX - DZ / 2; z > ZMIN; z -= DZ) {
+        const ring = [];
+        let t = 2;
+        for (let j = 0; j <= NA; j++) {
+          const a = j / NA * 6.2832, ux = Math.cos(a), uy = Math.sin(a);
+          t = Math.min(2, t + .25);
+          let d = sdf(ux * t, -.05 + uy * t, z);
+          while (d < 0 && t < 2) { t += .3; d = sdf(ux * t, -.05 + uy * t, z); }
+          for (let it = 0; it < 40 && d > .001; it++) { t -= d; d = sdf(ux * t, -.05 + uy * t, z); }
+          ring.push(t > .02 && d < .01 ? [ux * t, -.05 + uy * t] : null);
+        }
+        // ricampiona l'anello a lunghezza d'arco costante
+        let acc = DS * .5 * ((z * 7.3) % 1 + 1);
+        for (let j = 1; j < ring.length; j++) {
+          const p0 = ring[j - 1], p1 = ring[j];
+          if (!p0 || !p1) continue;
+          const seg = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]);
+          if (seg > .2) continue;
+          while (acc <= seg) {
+            const f = acc / seg, x = p0[0] + (p1[0] - p0[0]) * f, y = p0[1] + (p1[1] - p0[1]) * f;
+            PTS.push([x, y, z]);
+            NRM.push(grad(x, y, z));
+            const ear = Math.abs(x) > .64 && z < .12 && z > -.52 && y > -.15 && y < .35;
+            const vx = x - C0[0], vy = y - C0[1], vz = z - C0[2], L0 = Math.sqrt(vx * vx + vy * vy + vz * vz);
+            // le onde corrono solo sul cuoio capelluto
+            SCALP.push(z > -.2 && !(y < -.7 && z < .12) && !ear ? [vx / L0, vy / L0, vz / L0] : null);
+            acc += DS;
+          }
+          acc -= seg;
+        }
+      }
+      // elettrodi: coordinate dall'alto (x destra, y nuca) proiettate sul cranio lungo un raggio
+      const E2 = [
+        ['Fp1',-.31,-.95],['Fp2',.31,-.95],['F7',-.81,-.59],['F3',-.42,-.52],['Fz',0,-.5],['F4',.42,-.52],['F8',.81,-.59],
+        ['FC5',-.62,-.27],['FC1',-.2,-.25],['FC2',.2,-.25],['FC6',.62,-.27],
+        ['T7',-1,0],['C3',-.5,0],['Cz',0,0],['C4',.5,0],['T8',1,0],
+        ['CP5',-.62,.27],['CP1',-.2,.25],['CP2',.2,.25],['CP6',.62,.27],
+        ['P7',-.81,.59],['P3',-.42,.52],['Pz',0,.5],['P4',.42,.52],['P8',.81,.59],
+        ['O1',-.31,.95],['Oz',0,1],['O2',.31,.95]
+      ];
+      const EL = E2.map(([n, x, y], k) => {
+        const rr = Math.hypot(x, y), th = rr * Math.PI / 2 * .97, ph = Math.atan2(y, x);
+        const u = [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)];
+        let t = 2;
+        for (let it = 0; it < 60; it++) { const d = sdf(C0[0] + u[0] * t, C0[1] + u[1] * t, C0[2] + u[2] * t); t -= d; if (Math.abs(d) < 1e-4) break; }
+        const p = [C0[0] + u[0] * t, C0[1] + u[1] * t, C0[2] + u[2] * t], nn = grad(p[0], p[1], p[2]);
+        return { n, v: [p[0] + nn[0] * .025, p[1] + nn[1] * .025, p[2] + nn[2] * .025], nn, u, f: .6 + (k * 37 % 11) / 12, p: k * 1.3 };
+      });
+      const EDGES = [];
+      for (let a = 0; a < EL.length; a++) for (let b = a + 1; b < EL.length; b++) {
+        const d = Math.hypot(EL[a].v[0] - EL[b].v[0], EL[a].v[1] - EL[b].v[1], EL[a].v[2] - EL[b].v[2]);
+        if (d < .55) EDGES.push([a, b, (a * 7 + b * 13) % 17 / 2.7]);
+      }
+      return { PTS, NRM, SCALP, EL, EDGES };
+    };
+    let G = null;
 
     // rotazione: automatica + trascinamento con inerzia
-    let yaw = .55, pitch = .75, vYaw = 0, vPitch = 0, dragging = false, lx = 0, ly = 0, lastT = null;
+    let yaw = .6, pitch = .32, vYaw = 0, vPitch = 0, dragging = false, lx = 0, ly = 0, lastT = null;
     const frame = head.parentElement;
     head.addEventListener('pointerdown', (e) => { dragging = true; lx = e.clientX; ly = e.clientY; vYaw = vPitch = 0; head.setPointerCapture(e.pointerId); head.classList.add('grab'); });
     head.addEventListener('pointermove', (e) => {
       if (!dragging) return;
       const dx = e.clientX - lx, dy = e.clientY - ly; lx = e.clientX; ly = e.clientY;
       vYaw = dx * .008; vPitch = dy * .006;
-      yaw += vYaw; pitch = Math.max(-.4, Math.min(1.3, pitch + vPitch));
+      yaw += vYaw; pitch = Math.max(-.5, Math.min(1.3, pitch + vPitch));
     });
     const endDrag = () => { dragging = false; head.classList.remove('grab'); };
     head.addEventListener('pointerup', endDrag);
@@ -262,10 +312,12 @@
     let S = null;
     const draw = (t) => {
       if (!S) S = fitCanvas(head);
+      if (!G) G = build();
+      const { PTS, NRM, SCALP, EL, EDGES } = G;
       const dt = lastT === null ? 0 : Math.min(.05, t - lastT); lastT = t;
       if (!dragging) {
         yaw += (reduceMotion ? 0 : .18) * dt + vYaw; vYaw *= .94;
-        pitch = Math.max(-.4, Math.min(1.3, pitch + vPitch)); vPitch *= .9;
+        pitch = Math.max(-.5, Math.min(1.3, pitch + vPitch)); vPitch *= .9;
       }
       if (t > nextWave && !reduceMotion) {
         const src = EL[Math.floor(R3() * EL.length)];
@@ -276,12 +328,15 @@
 
       const { ctx, w, h } = S;
       ctx.clearRect(0, 0, w, h);
-      const cx = w / 2, cy = h / 2 + h * .06, sc = Math.min(w, h) * .32, cam = 3.4;
+      const cx = w / 2, cy = h / 2, sc = Math.min(w, h) * .28, cam = 4, Z0 = -.2;
       const cyw = Math.cos(yaw), syw = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
-      const proj = (x, y, z) => {
-        // rotazione attorno all'asse verticale (yaw) poi inclinazione (pitch)
+      // rotazione attorno all'asse verticale (yaw) poi inclinazione (pitch)
+      const rot = (x, y, z) => {
         const x1 = x * cyw - y * syw, y1 = x * syw + y * cyw;
-        const y2 = y1 * cp - z * sp, z2 = y1 * sp + z * cp;
+        return [x1, y1 * cp - z * sp, y1 * sp + z * cp];
+      };
+      const proj = (x, y, z) => {
+        const [x1, y2, z2] = rot(x, y, z - Z0);
         const k = cam / (cam + y2);
         return [cx + x1 * sc * k, cy - z2 * sc * k, y2, k];
       };
@@ -296,39 +351,48 @@
         return e;
       };
       const fg = colors.fg, acc = colors.accent;
-      // punti (dietro più tenui, davanti più luminosi)
+      // luce dall'alto a sinistra, verso l'osservatore (coordinate di vista: y = profondità)
+      const LX = .5, LY = -.68, LZ = .53;
+      // punti: luminosità dalla normale (luce + bordo), quelli sul retro quasi trasparenti
       for (let i = 0; i < PTS.length; i++) {
-        const p = PTS[i];
-        const [X, Y, depth, k] = proj(p[0], p[1], p[2]);
-        const front = Math.max(0, Math.min(1, (1 - depth) / 2));
-        const e = p[3] === 0 ? waveAt(unit[i]) : 0;
-        ctx.globalAlpha = .12 + .55 * front + .35 * e;
+        const p = PTS[i], nr = rot(NRM[i][0], NRM[i][1], NRM[i][2]);
+        const [X, Y, , k] = proj(p[0], p[1], p[2]);
+        const facing = -nr[1];
+        const lam = Math.max(0, nr[0] * LX + nr[1] * LY + nr[2] * LZ);
+        const rim = Math.pow(1 - Math.min(1, Math.abs(facing)), 3);
+        const e = SCALP[i] ? waveAt(SCALP[i]) : 0;
+        const lit = facing > 0 ? .18 + .82 * lam : 0;
+        let al = facing > 0 ? .05 + .85 * Math.pow(lit, 1.4) * (.6 + .4 * facing) : .03;
+        if (facing > -.2) al += .4 * rim;
+        al += .45 * e;
+        if (p[2] < -.95) al *= Math.max(0, (p[2] + 1.45) / .5);   // il collo sfuma
+        ctx.globalAlpha = Math.min(1, al);
         ctx.fillStyle = e > .25 ? acc : fg;
-        const s = (p[3] === 2 ? .8 : 1.1) * k + e * 1.6;
+        const s = (facing > 0 ? .8 + .7 * lit : .7) * k + e * 1.6;
         ctx.fillRect(X - s / 2, Y - s / 2, s, s);
       }
       // connessioni tra elettrodi
-      const EP = EL.map(el => proj(el.v[0] * 1.02, el.v[1] * 1.02, el.v[2] * 1.02));
+      const EP = EL.map(el => { const q = proj(el.v[0], el.v[1], el.v[2]); q.push(-rot(el.nn[0], el.nn[1], el.nn[2])[1]); return q; });
       ctx.lineWidth = 1;
       for (const [a, b, ph] of EDGES) {
         const s = Math.sin(t * .8 + ph);
         if (s < .55) continue;
-        const front = Math.max(0, Math.min(1, (2 - EP[a][2] - EP[b][2]) / 4));
+        const front = Math.max(0, Math.min(1, (EP[a][4] + EP[b][4] + 1) / 3));
         ctx.globalAlpha = (s - .55) * 1.6 * (.25 + .75 * front);
         ctx.strokeStyle = acc;
         ctx.beginPath(); ctx.moveTo(EP[a][0], EP[a][1]); ctx.lineTo(EP[b][0], EP[b][1]); ctx.stroke();
       }
       // elettrodi
       EL.forEach((el, k) => {
-        const [X, Y, depth, kk] = EP[k];
-        const front = Math.max(0, Math.min(1, (1 - depth) / 2));
+        const [X, Y, , kk, fc] = EP[k];
+        const front = Math.max(0, Math.min(1, (fc + .6) / 1.4));
         const act = .5 + .5 * Math.sin(t * el.f + el.p);
         const hit = waves.some(wv => wv.src === el && t - wv.t0 < .5);
-        ctx.globalAlpha = .25 + .75 * front;
+        ctx.globalAlpha = .12 + .88 * front;
         ctx.fillStyle = hit || act > .92 ? acc : fg;
         ctx.beginPath(); ctx.arc(X, Y, (2 + act * 1.4 + (hit ? 2.5 : 0)) * kk, 0, 6.2832); ctx.fill();
-        if (front > .55 && w > 300) {
-          ctx.globalAlpha = (front - .55) * 1.4;
+        if (front > .7 && w > 300) {
+          ctx.globalAlpha = (front - .7) * 2.2;
           ctx.fillStyle = colors['fg-dim'];
           ctx.font = '9px "JetBrains Mono", monospace';
           ctx.fillText(el.n.toUpperCase(), X + 6, Y - 6);
