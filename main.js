@@ -10,7 +10,7 @@
   const colors = {};
   function readColors() {
     const cs = getComputedStyle(root);
-    for (const k of ['fg', 'fg-dim', 'line', 'line-soft', 'rec', 'accent', 'trace', 'bg', 'bg-2']) {
+    for (const k of ['fg', 'fg-dim', 'line', 'line-soft', 'rec', 'accent', 'cold', 'trace', 'bg', 'bg-2']) {
       colors[k] = cs.getPropertyValue('--' + k).trim();
     }
   }
@@ -187,221 +187,171 @@
     themeListeners.push(redraw);
   }
 
-  /* ---------- HEAD 3D: nuvola di punti con elettrodi 10-20 e onde di attività ---------- */
-  const head = document.getElementById('ascii');
+  /* ---------- TOPOMAP: mappa di potenziale sullo scalpo, vista dall'alto ---------- */
+  const topo = document.getElementById('ascii');
   const status = document.getElementById('ascii-status');
-  if (head) {
-    const R3 = rng(2026);
-    // la geometria si costruisce solo la prima volta che la sezione diventa visibile
-    const build = () => {
-      // superficie implicita (x laterale, y avanti(-)/dietro(+), z verticale): primitive unite in modo morbido
-      const ell = (x, y, z, cx, cy, cz, rx, ry, rz) => {
-        const a = (x - cx) / rx, b = (y - cy) / ry, c = (z - cz) / rz;
-        const k0 = Math.sqrt(a * a + b * b + c * c), a1 = a / rx, b1 = b / ry, c1 = c / rz, k1 = Math.sqrt(a1 * a1 + b1 * b1 + c1 * c1) || 1e-6;
-        return k0 * (k0 - 1) / k1;
-      };
-      const smin = (a, b, k) => { const h = Math.max(k - Math.abs(a - b), 0) / k; return Math.min(a, b) - h * h * k / 4; };
-      const smax = (a, b, k) => -smin(-a, -b, k);
-      // cono arrotondato (dorso del naso): raggio che cresce dalla radice alla punta
-      const cone = (x, y, z, ax, ay, az, bx, by, bz, ra, rb) => {
-        const px = x - ax, py = y - ay, pz = z - az, dx = bx - ax, dy = by - ay, dz = bz - az;
-        const h = Math.max(0, Math.min(1, (px * dx + py * dy + pz * dz) / (dx * dx + dy * dy + dz * dz)));
-        const qx = px - dx * h, qy = py - dy * h, qz = pz - dz * h;
-        return Math.sqrt(qx * qx + qy * qy + qz * qz) - (ra + (rb - ra) * h);
-      };
-      const sdf = (x, y, z) => {
-        const ax = Math.abs(x);
-        let d = ell(x, y, z, 0, .06, .2, .74, .93, .84);                         // cranio
-        d = smin(d, ell(x, y, z, 0, -.3, -.42, .56, .6, .56), .3);               // viso e mascella
-        d = smin(d, ell(x, y, z, 0, -.64, -.8, .23, .22, .17), .16);             // mento
-        d = smin(d, ell(ax, y, z, .4, -.66, -.27, .17, .17, .13), .12);          // zigomi
-        d = smin(d, ell(x, y, z, 0, -.83, .0, .43, .1, .085), .1);               // arcate sopraccigliari
-        d = smax(d, -ell(ax, y, z, .27, -.97, -.12, .16, .14, .11), .06);         // orbite
-        d = smin(d, ell(ax, y, z, .27, -.8, -.13, .09, .09, .09), .02);      // bulbi oculari
-        d = smin(d, cone(x, y, z, 0, -.88, -.14, 0, -1.13, -.49, .042, .08), .06); // dorso del naso
-        d = smin(d, ell(x, y, z, 0, -1, -.54, .135, .08, .065), .05);          // pinne nasali
-        d = smin(d, ell(x, y, z, 0, -.9, -.645, .17, .06, .055), .04);          // labbra
-        d = smin(d, ell(ax, y, z, .73, .1, -.2, .06, .16, .27), .05);           // orecchie
-        const nx = x / .36, ny = (y - .14) / .4, nk = Math.sqrt(nx * nx + ny * ny) - 1;                      // collo
-        d = smin(d, Math.max(nk * .37, z + .45), .22);
-        return d;
-      };
-      const grad = (x, y, z) => {
-        const e = .003, a = sdf(x + e, y - e, z - e), b = sdf(x - e, y - e, z + e), c = sdf(x - e, y + e, z - e), d = sdf(x + e, y + e, z + e);
-        const gx = a - b - c + d, gy = -a - b + c + d, gz = -a + b - c + d;
-        const L = Math.hypot(gx, gy, gz) || 1;
-        return [gx / L, gy / L, gz / L];
-      };
-      // campionamento a "scansione": anelli orizzontali (come le fette di una TAC), punti a passo costante lungo ogni anello
-      const PTS = [], NRM = [], SCALP = [], C0 = [0, .06, .2];
-      const ZMIN = -1.45, ZMAX = 1.03, DZ = .052, DS = .034, NA = 300;
-      for (let z = ZMAX - DZ / 2; z > ZMIN; z -= DZ) {
-        const ring = [];
-        let t = 2;
-        for (let j = 0; j <= NA; j++) {
-          const a = j / NA * 6.2832, ux = Math.cos(a), uy = Math.sin(a);
-          t = Math.min(2, t + .25);
-          let d = sdf(ux * t, -.05 + uy * t, z);
-          while (d < 0 && t < 2) { t += .3; d = sdf(ux * t, -.05 + uy * t, z); }
-          for (let it = 0; it < 40 && d > .001; it++) { t -= d; d = sdf(ux * t, -.05 + uy * t, z); }
-          ring.push(t > .02 && d < .01 ? [ux * t, -.05 + uy * t] : null);
-        }
-        // ricampiona l'anello a lunghezza d'arco costante
-        let acc = DS * .5 * ((z * 7.3) % 1 + 1);
-        for (let j = 1; j < ring.length; j++) {
-          const p0 = ring[j - 1], p1 = ring[j];
-          if (!p0 || !p1) continue;
-          const seg = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]);
-          if (seg > .2) continue;
-          while (acc <= seg) {
-            const f = acc / seg, x = p0[0] + (p1[0] - p0[0]) * f, y = p0[1] + (p1[1] - p0[1]) * f;
-            PTS.push([x, y, z]);
-            NRM.push(grad(x, y, z));
-            const ear = Math.abs(x) > .64 && z < .12 && z > -.52 && y > -.15 && y < .35;
-            const vx = x - C0[0], vy = y - C0[1], vz = z - C0[2], L0 = Math.sqrt(vx * vx + vy * vy + vz * vz);
-            // le onde corrono solo sul cuoio capelluto
-            SCALP.push(z > -.2 && !(y < -.7 && z < .12) && !ear ? [vx / L0, vy / L0, vz / L0] : null);
-            acc += DS;
-          }
-          acc -= seg;
-        }
+  if (topo) {
+    // elettrodi 10-20, coordinate dall'alto: x destra, y nuca (naso in alto)
+    const EL = [
+      ['Fp1',-.31,-.95],['Fp2',.31,-.95],['F7',-.81,-.59],['F3',-.42,-.52],['Fz',0,-.5],['F4',.42,-.52],['F8',.81,-.59],
+      ['FC5',-.62,-.27],['FC1',-.2,-.25],['FC2',.2,-.25],['FC6',.62,-.27],
+      ['T7',-1,0],['C3',-.5,0],['Cz',0,0],['C4',.5,0],['T8',1,0],
+      ['CP5',-.62,.27],['CP1',-.2,.25],['CP2',.2,.25],['CP6',.62,.27],
+      ['P7',-.81,.59],['P3',-.42,.52],['Pz',0,.5],['P4',.42,.52],['P8',.81,.59],
+      ['O1',-.31,.95],['Oz',0,1],['O2',.31,.95]
+    ].map(([n, x, y], k) => ({ n, x, y, k }));
+    // sorgenti: dipoli che si spostano, ruotano e invertono polarità + un ritmo posteriore
+    const R4 = rng(1020);
+    const DIP = [0, 1, 2].map(() => ({
+      ax: .25 + R4() * .35, ay: .25 + R4() * .35, wx: .11 + R4() * .12, wy: .09 + R4() * .12,
+      px: R4() * 6.28, py: R4() * 6.28, wr: (.12 + R4() * .15) * (R4() < .5 ? -1 : 1), pr: R4() * 6.28,
+      wa: .35 + R4() * .3, pa: R4() * 6.28
+    }));
+    const S2 = 2 * .42 * .42;
+    const field = (x, y, t) => {
+      let v = 0;
+      for (const d of DIP) {
+        const cx = d.ax * Math.sin(d.wx * t + d.px), cy = d.ay * Math.sin(d.wy * t + d.py);
+        const th = d.wr * t + d.pr, ox = Math.cos(th) * .3, oy = Math.sin(th) * .3;
+        const a = Math.sin(d.wa * t + d.pa);
+        const p1 = (x - cx - ox) ** 2 + (y - cy - oy) ** 2, p2 = (x - cx + ox) ** 2 + (y - cy + oy) ** 2;
+        v += a * (Math.exp(-p1 / S2) - Math.exp(-p2 / S2));
       }
-      // elettrodi: coordinate dall'alto (x destra, y nuca) proiettate sul cranio lungo un raggio
-      const E2 = [
-        ['Fp1',-.31,-.95],['Fp2',.31,-.95],['F7',-.81,-.59],['F3',-.42,-.52],['Fz',0,-.5],['F4',.42,-.52],['F8',.81,-.59],
-        ['FC5',-.62,-.27],['FC1',-.2,-.25],['FC2',.2,-.25],['FC6',.62,-.27],
-        ['T7',-1,0],['C3',-.5,0],['Cz',0,0],['C4',.5,0],['T8',1,0],
-        ['CP5',-.62,.27],['CP1',-.2,.25],['CP2',.2,.25],['CP6',.62,.27],
-        ['P7',-.81,.59],['P3',-.42,.52],['Pz',0,.5],['P4',.42,.52],['P8',.81,.59],
-        ['O1',-.31,.95],['Oz',0,1],['O2',.31,.95]
-      ];
-      const EL = E2.map(([n, x, y], k) => {
-        const rr = Math.hypot(x, y), th = rr * Math.PI / 2 * .97, ph = Math.atan2(y, x);
-        const u = [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)];
-        let t = 2;
-        for (let it = 0; it < 60; it++) { const d = sdf(C0[0] + u[0] * t, C0[1] + u[1] * t, C0[2] + u[2] * t); t -= d; if (Math.abs(d) < 1e-4) break; }
-        const p = [C0[0] + u[0] * t, C0[1] + u[1] * t, C0[2] + u[2] * t], nn = grad(p[0], p[1], p[2]);
-        return { n, v: [p[0] + nn[0] * .025, p[1] + nn[1] * .025, p[2] + nn[2] * .025], nn, u, f: .6 + (k * 37 % 11) / 12, p: k * 1.3 };
-      });
-      const EDGES = [];
-      for (let a = 0; a < EL.length; a++) for (let b = a + 1; b < EL.length; b++) {
-        const d = Math.hypot(EL[a].v[0] - EL[b].v[0], EL[a].v[1] - EL[b].v[1], EL[a].v[2] - EL[b].v[2]);
-        if (d < .55) EDGES.push([a, b, (a * 7 + b * 13) % 17 / 2.7]);
-      }
-      return { PTS, NRM, SCALP, EL, EDGES };
+      v += .35 * Math.sin(.8 * t) * Math.exp(-(x * x + (y - .7) ** 2) / .5);
+      return v * .85;
     };
-    let G = null;
+    // componente veloce (solo per il tracciato del canale selezionato)
+    const fast = (k, t) => .18 * Math.sin(6.2832 * (9.5 + k % 3 * .4) * t + k) * (.6 + .4 * Math.sin(.9 * t + k))
+      + .1 * Math.sin(6.2832 * 17 * t + k * 2.1) + .08 * Math.sin(6.2832 * 3.1 * t + k * .7);
+    const UV = 20;                       // ±1 del campo = ±20 µV
+    const G = 64, EXT = 1.16;            // griglia del campo, raggio della testa in unità elettrodo
+    const off = document.createElement('canvas'); off.width = off.height = G;
+    const octx = off.getContext('2d'), img = octx.createImageData(G, G), vals = new Float32Array(G * G);
+    const rgb = (c) => { const m = /^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i.exec(c || ''); return m ? [1, 2, 3].map(i => parseInt(m[i], 16)) : [124, 240, 197]; };
+    const LEVELS = [-.6, -.3, .3, .6];
+    let S = null, hover = null, auto = 0, nextAuto = 4;
+    const AUTO = ['Cz', 'Pz', 'Oz', 'C3', 'Fz', 'C4', 'P3', 'P4'].map(n => EL.findIndex(e => e.n === n));
+    let geom = null;
+    const pick = (e) => {
+      if (!geom) return;
+      const r = topo.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+      let best = null, bd = 28 * 28;
+      for (const el of EL) {
+        const dx = geom.cx + el.x * geom.k - mx, dy = geom.cy + el.y * geom.k - my, d = dx * dx + dy * dy;
+        if (d < bd) { bd = d; best = el.k; }
+      }
+      hover = best;
+      redraw();
+    };
+    topo.addEventListener('pointermove', pick);
+    topo.addEventListener('pointerdown', pick);
+    topo.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hover = null; redraw(); } });
 
-    // rotazione: automatica + trascinamento con inerzia
-    let yaw = .6, pitch = .32, vYaw = 0, vPitch = 0, dragging = false, lx = 0, ly = 0, lastT = null;
-    const frame = head.parentElement;
-    head.addEventListener('pointerdown', (e) => { dragging = true; lx = e.clientX; ly = e.clientY; vYaw = vPitch = 0; head.setPointerCapture(e.pointerId); head.classList.add('grab'); });
-    head.addEventListener('pointermove', (e) => {
-      if (!dragging) return;
-      const dx = e.clientX - lx, dy = e.clientY - ly; lx = e.clientX; ly = e.clientY;
-      vYaw = dx * .008; vPitch = dy * .006;
-      yaw += vYaw; pitch = Math.max(-.5, Math.min(1.3, pitch + vPitch));
-    });
-    const endDrag = () => { dragging = false; head.classList.remove('grab'); };
-    head.addEventListener('pointerup', endDrag);
-    head.addEventListener('pointercancel', endDrag);
-
-    // onde: partono da un elettrodo e si propagano sulla superficie
-    const waves = [];
-    let nextWave = 0.5;
-    let S = null;
     const draw = (t) => {
-      if (!S) S = fitCanvas(head);
-      if (!G) G = build();
-      const { PTS, NRM, SCALP, EL, EDGES } = G;
-      const dt = lastT === null ? 0 : Math.min(.05, t - lastT); lastT = t;
-      if (!dragging) {
-        yaw += (reduceMotion ? 0 : .18) * dt + vYaw; vYaw *= .94;
-        pitch = Math.max(-.5, Math.min(1.3, pitch + vPitch)); vPitch *= .9;
-      }
-      if (t > nextWave && !reduceMotion) {
-        const src = EL[Math.floor(R3() * EL.length)];
-        waves.push({ u: src.u, t0: t, src });
-        nextWave = t + 2.2 + R3() * 1.6;
-      }
-      while (waves.length && t - waves[0].t0 > 3.2) waves.shift();
-
+      if (!S) S = fitCanvas(topo);
       const { ctx, w, h } = S;
       ctx.clearRect(0, 0, w, h);
-      const cx = w / 2, cy = h / 2, sc = Math.min(w, h) * .28, cam = 4, Z0 = -.2;
-      const cyw = Math.cos(yaw), syw = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
-      // rotazione attorno all'asse verticale (yaw) poi inclinazione (pitch)
-      const rot = (x, y, z) => {
-        const x1 = x * cyw - y * syw, y1 = x * syw + y * cyw;
-        return [x1, y1 * cp - z * sp, y1 * sp + z * cp];
-      };
-      const proj = (x, y, z) => {
-        const [x1, y2, z2] = rot(x, y, z - Z0);
-        const k = cam / (cam + y2);
-        return [cx + x1 * sc * k, cy - z2 * sc * k, y2, k];
-      };
-      const waveAt = (u) => {
-        let e = 0;
-        for (const wv of waves) {
-          const ang = Math.acos(Math.max(-1, Math.min(1, u[0] * wv.u[0] + u[1] * wv.u[1] + u[2] * wv.u[2])));
-          const front = (t - wv.t0) * 1.15;
-          const d = ang - front;
-          e = Math.max(e, Math.exp(-d * d / .018) * Math.max(0, 1 - (t - wv.t0) / 3.2));
+      const R = Math.min(w, h * .82) * .37, cx = w / 2, cy = h * .44, k = R / EXT;
+      geom = { cx, cy, k };
+      const pos = rgb(colors.accent), neg = rgb(colors.cold);
+
+      // campo sulla griglia
+      for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) {
+        const x = ((i + .5) / G * 2 - 1) * EXT, y = ((j + .5) / G * 2 - 1) * EXT;
+        const v = field(x, y, t), o = (j * G + i) * 4, c = v > 0 ? pos : neg, a = Math.min(1, Math.abs(v));
+        vals[j * G + i] = v;
+        img.data[o] = c[0]; img.data[o + 1] = c[1]; img.data[o + 2] = c[2];
+        img.data[o + 3] = x * x + y * y < EXT * EXT * 1.08 ? 235 * Math.pow(a, .85) : 0;
+      }
+      octx.putImageData(img, 0, 0);
+      ctx.save();
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832); ctx.clip();
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(off, cx - R, cy - R, 2 * R, 2 * R);
+      // curve di livello (marching squares)
+      ctx.strokeStyle = colors.fg; ctx.lineWidth = 1;
+      const cs = 2 * R / G;
+      for (const L of LEVELS) {
+        ctx.globalAlpha = .22;
+        ctx.setLineDash(L < 0 ? [3, 3] : []);
+        ctx.beginPath();
+        for (let j = 0; j < G - 1; j++) for (let i = 0; i < G - 1; i++) {
+          const a = vals[j * G + i] - L, b = vals[j * G + i + 1] - L, c = vals[(j + 1) * G + i + 1] - L, d = vals[(j + 1) * G + i] - L;
+          const pts = [];
+          if ((a > 0) !== (b > 0)) pts.push([i + a / (a - b), j]);
+          if ((b > 0) !== (c > 0)) pts.push([i + 1, j + b / (b - c)]);
+          if ((c > 0) !== (d > 0)) pts.push([i + 1 - c / (c - d), j + 1]);
+          if ((d > 0) !== (a > 0)) pts.push([i, j + 1 - d / (d - a)]);
+          for (let q = 0; q + 1 < pts.length; q += 2) {
+            ctx.moveTo(cx - R + (pts[q][0] + .5) * cs, cy - R + (pts[q][1] + .5) * cs);
+            ctx.lineTo(cx - R + (pts[q + 1][0] + .5) * cs, cy - R + (pts[q + 1][1] + .5) * cs);
+          }
         }
-        return e;
-      };
-      const fg = colors.fg, acc = colors.accent;
-      // luce dall'alto a sinistra, verso l'osservatore (coordinate di vista: y = profondità)
-      const LX = .5, LY = -.68, LZ = .53;
-      // punti: luminosità dalla normale (luce + bordo), quelli sul retro quasi trasparenti
-      for (let i = 0; i < PTS.length; i++) {
-        const p = PTS[i], nr = rot(NRM[i][0], NRM[i][1], NRM[i][2]);
-        const [X, Y, , k] = proj(p[0], p[1], p[2]);
-        const facing = -nr[1];
-        const lam = Math.max(0, nr[0] * LX + nr[1] * LY + nr[2] * LZ);
-        const rim = Math.pow(1 - Math.min(1, Math.abs(facing)), 3);
-        const e = SCALP[i] ? waveAt(SCALP[i]) : 0;
-        const lit = facing > 0 ? .18 + .82 * lam : 0;
-        let al = facing > 0 ? .05 + .85 * Math.pow(lit, 1.4) * (.6 + .4 * facing) : .03;
-        if (facing > -.2) al += .4 * rim;
-        al += .45 * e;
-        if (p[2] < -.95) al *= Math.max(0, (p[2] + 1.45) / .5);   // il collo sfuma
-        ctx.globalAlpha = Math.min(1, al);
-        ctx.fillStyle = e > .25 ? acc : fg;
-        const s = (facing > 0 ? .8 + .7 * lit : .7) * k + e * 1.6;
-        ctx.fillRect(X - s / 2, Y - s / 2, s, s);
+        ctx.stroke();
       }
-      // connessioni tra elettrodi
-      const EP = EL.map(el => { const q = proj(el.v[0], el.v[1], el.v[2]); q.push(-rot(el.nn[0], el.nn[1], el.nn[2])[1]); return q; });
-      ctx.lineWidth = 1;
-      for (const [a, b, ph] of EDGES) {
-        const s = Math.sin(t * .8 + ph);
-        if (s < .55) continue;
-        const front = Math.max(0, Math.min(1, (EP[a][4] + EP[b][4] + 1) / 3));
-        ctx.globalAlpha = (s - .55) * 1.6 * (.25 + .75 * front);
-        ctx.strokeStyle = acc;
-        ctx.beginPath(); ctx.moveTo(EP[a][0], EP[a][1]); ctx.lineTo(EP[b][0], EP[b][1]); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+
+      // contorno della testa: cerchio, naso, orecchie
+      ctx.globalAlpha = .9; ctx.strokeStyle = colors.fg; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx - R * .12, cy - R * .993); ctx.lineTo(cx, cy - R * 1.13); ctx.lineTo(cx + R * .12, cy - R * .993);
+      for (const s of [-1, 1]) {
+        ctx.moveTo(cx + s * R * .995, cy - R * .16);
+        ctx.bezierCurveTo(cx + s * R * 1.1, cy - R * .2, cx + s * R * 1.12, cy + R * .18, cx + s * R * .99, cy + R * .16);
       }
+      ctx.stroke();
+
+      // canale selezionato: hover, altrimenti giro automatico
+      if (t > nextAuto) { auto = (auto + 1) % AUTO.length; nextAuto = t + 4; }
+      const sel = EL[hover ?? AUTO[auto]];
       // elettrodi
-      EL.forEach((el, k) => {
-        const [X, Y, , kk, fc] = EP[k];
-        const front = Math.max(0, Math.min(1, (fc + .6) / 1.4));
-        const act = .5 + .5 * Math.sin(t * el.f + el.p);
-        const hit = waves.some(wv => wv.src === el && t - wv.t0 < .5);
-        ctx.globalAlpha = .12 + .88 * front;
-        ctx.fillStyle = hit || act > .92 ? acc : fg;
-        ctx.beginPath(); ctx.arc(X, Y, (2 + act * 1.4 + (hit ? 2.5 : 0)) * kk, 0, 6.2832); ctx.fill();
-        if (front > .7 && w > 300) {
-          ctx.globalAlpha = (front - .7) * 2.2;
-          ctx.fillStyle = colors['fg-dim'];
-          ctx.font = '9px "JetBrains Mono", monospace';
-          ctx.fillText(el.n.toUpperCase(), X + 6, Y - 6);
+      ctx.font = '9px "JetBrains Mono", monospace';
+      for (const el of EL) {
+        const X = cx + el.x * k, Y = cy + el.y * k, on = el === sel;
+        ctx.globalAlpha = on ? 1 : .75;
+        ctx.fillStyle = colors.fg;
+        ctx.beginPath(); ctx.arc(X, Y, on ? 3.5 : 2, 0, 6.2832); ctx.fill();
+        if (on) { ctx.strokeStyle = colors.fg; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(X, Y, 8, 0, 6.2832); ctx.stroke(); }
+        if (w > 380 || on) {
+          ctx.globalAlpha = on ? 1 : .45;
+          ctx.fillStyle = on ? colors.fg : colors['fg-dim'];
+          ctx.fillText(el.n.toUpperCase(), X + 5, Y - 5);
         }
-      });
+      }
+
+      // barra dei colori
+      const bx = w - 26, by = cy - R * .5, bh = R;
+      for (let q = 0; q < bh; q++) {
+        const v = 1 - 2 * q / bh, c = v > 0 ? pos : neg;
+        ctx.globalAlpha = Math.pow(Math.abs(v), .85) * .92;
+        ctx.fillStyle = `rgb(${c[0]},${c[1]},${c[2]})`;
+        ctx.fillRect(bx, by + q, 6, 1);
+      }
+      ctx.globalAlpha = .7; ctx.strokeStyle = colors.line; ctx.strokeRect(bx - .5, by - .5, 7, bh + 1);
+      ctx.fillStyle = colors['fg-dim']; ctx.textAlign = 'right';
+      ctx.fillText(`+${UV}`, bx - 4, by + 8); ctx.fillText('0', bx - 4, by + bh / 2 + 3); ctx.fillText(`−${UV} µV`, bx - 4, by + bh);
+      ctx.textAlign = 'left';
+
+      // tracciato del canale selezionato (ultimi 3 s)
+      const ty = h * .905, th = h * .04, tx0 = 18, tx1 = w - 18;
+      ctx.globalAlpha = .5; ctx.strokeStyle = colors.line; ctx.beginPath(); ctx.moveTo(tx0, ty); ctx.lineTo(tx1, ty); ctx.stroke();
+      ctx.globalAlpha = 1; ctx.strokeStyle = colors.accent; ctx.lineWidth = 1.2; ctx.beginPath();
+      const N = Math.round(tx1 - tx0);
+      for (let q = 0; q <= N; q++) {
+        const tt = t - 3 + 3 * q / N, v = field(sel.x, sel.y, tt) + fast(sel.k, tt);
+        const Y = ty - v * th;
+        q ? ctx.lineTo(tx0 + q, Y) : ctx.moveTo(tx0, Y);
+      }
+      ctx.stroke();
+      ctx.fillStyle = colors['fg-dim']; ctx.globalAlpha = .9;
+      ctx.fillText(`${sel.n.toUpperCase()} · −3 s`, tx0, ty - th * 2.1);
       ctx.globalAlpha = 1;
-      if (status) status.textContent = `${EL.length} ch · ${PTS.length} pts`;
+      const val = field(sel.x, sel.y, t) * UV;
+      if (status) status.textContent = `${sel.n.toUpperCase()} · ${val >= 0 ? '+' : '−'}${Math.abs(val).toFixed(1)} µV`;
     };
-    const redraw = animateWhenVisible(head, draw);
+    const redraw = animateWhenVisible(topo, draw);
     window.addEventListener('resize', () => { S = null; redraw(); });
     themeListeners.push(redraw);
   }
