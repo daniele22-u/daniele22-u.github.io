@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ICU mortality prediction — Daniele Uras</title>
+  <meta name="description" content="An end-to-end pipeline that estimates in-hospital mortality from intensive-care vital signs, explains its predictions and turns them into a bedside dashboard.">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="ICU mortality prediction — Daniele Uras">
+  <meta property="og:description" content="An end-to-end pipeline that estimates in-hospital mortality from intensive-care vital signs, explains its predictions and turns them into a bedside dashboard.">
+  <meta property="og:image" content="https://daniele22-u.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/instrument-serif-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../style.css?v=202610031356">
+  <script>
+    (function () {
+      var d = document.documentElement, l = 'en';
+      try { var t = localStorage.getItem('theme'); if (t) d.dataset.theme = t; var s = localStorage.getItem('lang'); if (s === 'it' || s === 'en') l = s; else if ((navigator.language || '').toLowerCase().indexOf('it') === 0) l = 'it'; } catch (e) {}
+      var q = new URLSearchParams(location.search).get('lang'); if (q === 'it' || q === 'en') l = q;
+      d.lang = l; d.dataset.lang = l;
+    })();
+  </script>
+</head>
+<body class="pj-page">
+  <header class="pj-bar">
+    <a class="pj-back mono" href="../#work">← <span lang="en">All projects</span><span lang="it">Tutti i progetti</span></a>
+    <span class="pj-ch mono">CH-02 // <span lang="en">CLINICAL ML</span><span lang="it">ML CLINICO</span></span>
+    <span class="pj-tools">
+      <button class="pj-lang mono" type="button"><span class="l-en">EN</span> <span class="l-it">IT</span><span class="sr-only"> — switch language / cambia lingua</span></button>
+      <button class="theme-toggle pj-theme" type="button" aria-label="Toggle light / dark theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/></svg></button>
+    </span>
+  </header>
+
+  <main class="pj">
+    <canvas class="wave-hero" data-wave="icu" aria-hidden="true"></canvas>
+    <div class="pj-head">
+      <p class="pj-meta mono"><span lang="en">Smart Hospital course · Politecnico di Milano · Mar – Jun 2026</span><span lang="it">Corso Smart Hospital · Politecnico di Milano · mar – giu 2026</span></p>
+      <h1><span lang="en">ICU mortality prediction</span><span lang="it">Predizione della mortalità in terapia intensiva</span></h1>
+      <p class="pj-lead"><span lang="en">An end-to-end pipeline that estimates in-hospital mortality from intensive-care vital signs, explains its predictions and turns them into a bedside dashboard.</span><span lang="it">Una pipeline completa che stima la mortalità intra-ospedaliera dai parametri vitali in terapia intensiva, spiega le sue predizioni e le trasforma in una dashboard da reparto.</span></p>
+      <p class="pj-meta mono">Python · XGBoost · TensorFlow (1D-CNN) · SMOTE · SHAP · LIME</p>
+      <p class="pj-team mono"><span lang="en">with</span><span lang="it">con</span> <a href="https://www.linkedin.com/in/gabriele-carta/" target="_blank" rel="noopener">Gabriele Carta</a> · <a href="https://www.linkedin.com/in/filippo-saccomano-3503342ba/" target="_blank" rel="noopener">Filippo Saccomano</a></p>
+      <div class="pj-links"><a class="pj-btn mono" href="https://github.com/daniele22-u/smart_hospital_polimi" target="_blank" rel="noopener" data-goatcounter-click="pj-code-icu"><span lang="en">View code</span><span lang="it">Vedi il codice</span> ↗</a><a class="pj-btn mono" href="https://daniele22-u.github.io/smart_hospital_polimi/dashboard/" target="_blank" rel="noopener" data-goatcounter-click="pj-demo-icu"><span lang="en">Live dashboard</span><span lang="it">Dashboard live</span> ↗</a><a class="pj-btn mono" href="https://daniele22-u.github.io/smart_hospital_polimi/reports/task_report.html" target="_blank" rel="noopener" data-goatcounter-click="pj-report-icu"><span lang="en">Task report</span><span lang="it">Report</span> ↗</a></div>
+    </div>
+    <section class="pj-sec"><h2 class="mono">// <span lang="en">My role</span><span lang="it">Il mio ruolo</span></h2><div lang="en"><p>Code implementation, together with Gabriele Carta and Filippo Saccomano: the three of us wrote and tested the code side of the project.</p></div><div lang="it"><p>Implementazione del codice, insieme a Gabriele Carta e Filippo Saccomano: abbiamo scritto e testato in tre la parte di codice del progetto.</p></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">Data</span><span lang="it">Dati</span></h2><div lang="en"><p>A synthetic cohort inspired by MIMIC-III: <strong>500 ICU patients</strong>, 1,717 observations, 2–5 measurements per patient, 10 diagnoses. Mortality is <strong>12.6%</strong>, about one death for every seven survivors. With that imbalance, a model that predicts “survives” for everyone is 87% accurate and completely useless, so accuracy is the wrong metric from the start.</p></div><div lang="it"><p>Una coorte sintetica ispirata a MIMIC-III: <strong>500 pazienti</strong>, 1.717 osservazioni, 2–5 misure per paziente, 10 diagnosi. La mortalità è del <strong>12,6%</strong>, circa un decesso ogni sette sopravvissuti. Con questo sbilanciamento un modello che predice “sopravvive” per tutti è accurato all’87% e del tutto inutile: l’accuracy è la metrica sbagliata fin dall’inizio.</p></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">Approach</span><span lang="it">Approccio</span></h2><div lang="en"><ol><li><strong>Features:</strong> for every vital sign and lab value, mean, last value, change, minimum, maximum and slope over the stay, plus the NEWS2 early-warning score and a few clinical interactions.</li><li><strong>Models:</strong> XGBoost with SMOTE applied <em>only inside the training folds</em> (no leakage), a small 1D-CNN on the raw sequences, and a weighted ensemble, all on the same stratified 5-fold splits.</li><li><strong>Decision:</strong> the alert threshold is chosen from the cost of a missed death versus a false alarm, not left at 0.5.</li><li><strong>Explanation:</strong> SHAP and LIME, translated into plain-language reasons for clinicians.</li></ol></div><div lang="it"><ol><li><strong>Feature:</strong> per ogni parametro vitale ed esame di laboratorio, media, ultimo valore, variazione, minimo, massimo e pendenza nel ricovero, più lo score di allerta NEWS2 e alcune interazioni cliniche.</li><li><strong>Modelli:</strong> XGBoost con SMOTE applicato <em>solo dentro i fold di training</em> (nessun data leakage), una piccola CNN 1D sulle sequenze e un ensemble pesato, tutti sugli stessi 5 fold stratificati.</li><li><strong>Decisione:</strong> la soglia di allerta viene scelta in base al costo di un decesso non segnalato rispetto a un falso allarme, invece di lasciarla a 0,5.</li><li><strong>Spiegazione:</strong> SHAP e LIME, tradotti in motivazioni comprensibili per i clinici.</li></ol></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">What we found</span><span lang="it">Cosa abbiamo trovato</span></h2><div lang="en"><table class='pj-table'><thead><tr><th>Model</th><th>AUROC (out-of-fold)</th></tr></thead><tbody><tr><td>XGBoost</td><td>0.865</td></tr><tr><td>1D-CNN</td><td>0.792</td></tr><tr><td>Ensemble</td><td>0.838</td></tr></tbody></table><ul><li><strong>Deeper is not better:</strong> a 3-layer CNN with more filters did worse than the small one (0.778 → 0.766). With 2–5 time steps there is little temporal structure to learn.</li><li><strong>One number hides a lot:</strong> broken down by diagnosis, AUROC goes from 0.957 (trauma) to 0.758 (diabetes). Checking subgroups is a fairness step before any clinical use.</li><li><strong>The threshold is a clinical choice:</strong> raising the cost of a missed death trades specificity for sensitivity, and that trade-off belongs to clinicians.</li></ul><p class='pj-note'>The data is synthetic: these numbers compare methods within the project, not clinical performance.</p></div><div lang="it"><table class='pj-table'><thead><tr><th>Modello</th><th>AUROC (out-of-fold)</th></tr></thead><tbody><tr><td>XGBoost</td><td>0,865</td></tr><tr><td>CNN 1D</td><td>0,792</td></tr><tr><td>Ensemble</td><td>0,838</td></tr></tbody></table><ul><li><strong>Più profondo non vuol dire migliore:</strong> una CNN a 3 layer con più filtri è andata peggio di quella piccola (0,778 → 0,766). Con 2–5 istanti temporali c’è poca struttura da imparare.</li><li><strong>Un numero solo nasconde molto:</strong> diviso per diagnosi, l’AUROC va da 0,957 (trauma) a 0,758 (diabete). Controllare i sottogruppi è un passo di equità prima di qualsiasi uso clinico.</li><li><strong>La soglia è una scelta clinica:</strong> aumentare il costo di un decesso non segnalato scambia specificità con sensibilità, e quella scelta spetta ai clinici.</li></ul><p class='pj-note'>I dati sono sintetici: questi numeri confrontano metodi all’interno del progetto, non indicano prestazioni cliniche.</p></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">The dashboard</span><span lang="it">La dashboard</span></h2><div lang="en"><p>The last task was a clinician-facing mock-up of a bedside risk monitor: a risk gauge against the alert threshold, live vital-sign trends and a “Why this alert” panel that turns SHAP values into short sentences (“oxygen saturation critically low”, “lactate climbing”). It runs in the browser; try the live version.</p></div><div lang="it"><p>L’ultimo task era un prototipo pensato per i clinici: un monitor del rischio da letto con un indicatore rispetto alla soglia di allerta, l’andamento dei parametri vitali e un pannello “Perché questo allarme” che trasforma i valori SHAP in frasi brevi (“saturazione criticamente bassa”, “lattato in aumento”). Funziona nel browser: prova la versione live.</p></div></section><section class="pj-sec"><h2 class="mono">// <span lang="en">Context</span><span lang="it">Contesto</span></h2><div lang="en"><p>The project starts from the course’s reference pipeline. The instructor set five tasks as starting points for our own reasoning (threshold calibration, a new variability feature, CNN architecture changes, subgroup analysis and the dashboard); the choices, analyses and interpretations are ours.</p></div><div lang="it"><p>Il progetto parte dalla pipeline di riferimento del corso. Il docente ha assegnato cinque task come punto di partenza per il nostro ragionamento (calibrazione della soglia, una nuova feature di variabilità, modifiche all’architettura della CNN, analisi per sottogruppi e la dashboard); scelte, analisi e interpretazioni sono nostre.</p></div></section>
+    <nav class="pj-nav" aria-label="More projects"><a class="pj-nav-prev" href="thesis.html"><span class="mono">← CH-01</span><span lang="en">Imagined speech decoding with graph &amp; hypergraph neural networks</span><span lang="it">Decodifica dell’imagined speech con graph &amp; hypergraph neural network</span></a><a class="pj-nav-next" href="telemedicine.html"><span class="mono">CH-03 →</span><span lang="en">Telemedicine algorithm</span><span lang="it">Algoritmo per la telemedicina</span></a></nav>
+  </main>
+
+  <footer class="legal mono pj-foot"><span>© 2026 Daniele Uras · <a href="../privacy.html">Privacy &amp; legal</a></span><a href="../">daniele22-u.github.io</a></footer>
+
+  <script>
+    document.querySelector('.pj-lang').addEventListener('click', function () {
+      var d = document.documentElement, l = d.dataset.lang === 'it' ? 'en' : 'it';
+      d.lang = l; d.dataset.lang = l;
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  </script>
+  <script defer src="../main.js?v=202610031356"></script>
+<div style="position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#ff3b30;color:#fff;font:700 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;text-align:center;padding:7px 0;pointer-events:none">STAGING · PREVIEW — NOT THE LIVE SITE</div>
+</body>
+</html>
