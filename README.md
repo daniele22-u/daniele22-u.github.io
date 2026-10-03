@@ -15,7 +15,7 @@ privacy.html          privacy notice (EN/IT)
 robots.txt, sitemap.xml   search-engine basics
 i18n.js               Italian translations + EN/IT switch
 style.css             layout, themes (dark default, light toggle), responsive rules
-main.js               animations: EEG hero, ASCII electrode montage, project waveforms
+main.js               animations: EEG hero, 3D point-cloud head, timeline, project waveforms
 assets/
   og.png              1200×630 link-preview card (LinkedIn, WhatsApp, …)
   fonts/              self-hosted woff2 fonts + SIL OFL licences (no Google Fonts)

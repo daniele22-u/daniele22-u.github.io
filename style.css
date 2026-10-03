@@ -378,8 +378,10 @@ img { max-width: 100%; display: block; }
   aspect-ratio: 1 / 1;
   height: auto;
   display: block;
-  cursor: crosshair;
+  cursor: grab;
+  touch-action: pan-y;
 }
+#ascii.grab { cursor: grabbing; }
 
 /* ============ ABOUT (stanza in prospettiva) ============ */
 .about {
