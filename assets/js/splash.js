@@ -1,13 +1,15 @@
 /* Splash "acquisizione del segnale": 8 canali EEG che si disegnano, convergono in una
    linea, il nome si apre dalla linea e lo schermo si divide rivelando il sito.
-   Una volta per sessione, saltabile (click/tasto), assente con prefers-reduced-motion.
+   Solo arrivando da fuori (non navigando nel sito), saltabile, assente con prefers-reduced-motion.
    Va incluso come primo elemento del <body>. Forzalo con ?splash nell'URL. */
 (() => {
   const force = /[?&]splash\b/.test(location.search);
-  let seen = false;
-  try { seen = sessionStorage.getItem('splash') === '1'; } catch (e) {}
-  if (!force && (seen || matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
-  try { sessionStorage.setItem('splash', '1'); } catch (e) {}
+  // niente splash quando si naviga dentro il sito (es. ritorno da una pagina progetto) o con avanti/indietro
+  let internal = false;
+  try { internal = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+  const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  if (nav && nav.type === 'back_forward') internal = true;
+  if (!force && (internal || matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
 
   const css = `
   #splash{position:fixed;inset:0;z-index:10000;pointer-events:auto;cursor:pointer;font-family:var(--f-mono);color:var(--fg)}

@@ -34,7 +34,7 @@ python3 tools/build_projects.py
 
 ## Staging
 
-The intro splash lives in `assets/js/splash.js` (once per session, skippable, off with reduced motion; add `?splash` to the URL to see it again). To disable it, remove its `<script>` line at the top of `<body>` in `index.html`.
+The intro splash lives in `assets/js/splash.js` (shown when arriving from outside the site, not when navigating between its pages; skippable; off with reduced motion; add `?splash` to the URL to force it). To disable it, remove its `<script>` line at the top of `<body>` in `index.html`.
 
 Changes can be previewed at `https://daniele22-u.github.io/staging/` before going live. `tools/stage.sh <source> staging` copies the site there with `noindex`, no visit counter and a red STAGING banner; `robots.txt` also blocks `/staging/`. Delete the folder once the changes are merged.
 
