@@ -306,19 +306,6 @@ img { max-width: 100%; display: block; }
   color: var(--fg-dim);
 }
 
-.marquee {
-  overflow: hidden;
-  text-transform: none;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  font-size: 10px;
-  color: var(--fg-dim);
-  padding: 7px 0;
-  white-space: nowrap;
-}
-.marquee .track { display: inline-block; animation: scroll-x 60s linear infinite; }
-.marquee.reverse .track { animation-direction: reverse; }
-@keyframes scroll-x { to { transform: translateX(-50%); } }
 
 .name {
   margin: 0;
@@ -332,6 +319,13 @@ img { max-width: 100%; display: block; }
   line-height: 1;
   padding: clamp(10px, 2vw, 22px) 16px;
   letter-spacing: -0.01em;
+}
+.hero-sub {
+  margin: 0;
+  padding: 0 16px clamp(24px, 4vw, 48px);
+  text-align: center;
+  font-size: 12px;
+  color: var(--fg-dim);
 }
 .name-mark { width: 0.3em; height: 0.3em; flex: none; animation: spin 14s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -350,39 +344,6 @@ img { max-width: 100%; display: block; }
 .scroll-cue.gone { opacity: 0; pointer-events: none; }
 @keyframes cue-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 @media (max-width: 860px) { .scroll-cue { display: grid; } }
-
-/* ============ PORTRAIT ============ */
-.portrait {
-  display: grid;
-  place-items: center;
-  padding: clamp(80px, 14vw, 180px) 16px;
-}
-
-.portrait-frame {
-  position: relative;
-  width: min(440px, 100%);
-  border: 1px solid var(--line);
-  background: var(--bg);
-}
-
-.frame-bar, .frame-foot {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 12px;
-  font-size: 10px;
-  color: var(--fg-dim);
-}
-.frame-bar { border-bottom: 1px solid var(--line); }
-.frame-foot { border-top: 1px solid var(--line); }
-
-#ascii-status { text-transform: none; }
-#ascii {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  height: auto;
-  display: block;
-  cursor: crosshair;
-}
 
 /* ============ ABOUT (stanza in prospettiva) ============ */
 .about {

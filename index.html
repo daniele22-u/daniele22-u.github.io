@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Daniele Uras — Biomedical Engineer</title>
-  <meta name="description" content="Daniele Uras — Biomedical engineer working on EEG, signal processing and machine learning. MSc Biomedical Engineering (bioinformatics), Politecnico di Milano.">
+  <meta name="description" content="Daniele Uras — Biomedical engineer working on EEG, signal processing and machine learning. MSc in Biomedical Engineering (bioinformatics), graduated October 2026 with 110/110, Politecnico di Milano.">
   <meta name="author" content="Daniele Uras">
   <link rel="canonical" href="https://daniele22-u.github.io/">
   <meta name="theme-color" content="#0a0a0a">
@@ -14,7 +14,7 @@
   <meta property="og:url" content="https://daniele22-u.github.io/">
   <meta property="og:site_name" content="Daniele Uras">
   <meta property="og:title" content="Daniele Uras — Biomedical Engineer">
-  <meta property="og:description" content="EEG, signal processing and machine learning. MSc Biomedical Engineering at Politecnico di Milano · available from November 2026.">
+  <meta property="og:description" content="EEG, signal processing and machine learning. MSc graduate, Politecnico di Milano · available from November 2026.">
   <meta property="og:image" content="https://daniele22-u.github.io/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -55,7 +55,7 @@
   <link rel="preload" href="assets/fonts/anton-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-serif-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=202610031356">
+  <link rel="stylesheet" href="style.css?v=202610251039">
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -94,7 +94,7 @@
     </button>
     <button class="cell lang-toggle mono" type="button"><span data-lang="en">EN</span> <span data-lang="it">IT</span><span class="sr-only"> — switch language / cambia lingua</span></button>
     <div class="cell status mono">
-      <span data-i18n="status.role">Biomedical engineer · Milan, IT</span>
+      <span data-i18n="status.role">Biomedical engineer, MSc · Milan, IT</span>
       <a href="#contact"><span data-i18n="status.avail">Available from Nov 2026</span> <span class="arrow">→</span> <b data-i18n="status.cta">Get in touch</b></a>
     </div>
   </header>
@@ -105,29 +105,19 @@
     <section class="hero" aria-label="Intro">
       <div class="eeg-wrap">
         <canvas id="eeg" aria-hidden="true"></canvas>
-        <a class="scroll-cue" href="#montage" aria-label="Scroll down"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="scroll-cue" href="#about" aria-label="Scroll down"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <div class="eeg-hud mono" aria-hidden="true">
           <span><i class="rec-dot"></i> REC</span>
           <span>FS 256 Hz · 0.5–45 Hz</span>
           <span id="clock">00:00:00.000</span>
         </div>
       </div>
-      <div class="marquee mono" aria-hidden="true"><div class="track" data-fill="channels"></div></div>
       <h1 class="name">
         <span>DANIELE</span>
         <svg class="name-mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="20" cy="20" r="6" fill="currentColor"/></svg>
         <span>URAS</span>
       </h1>
-      <div class="marquee mono reverse" aria-hidden="true"><div class="track" data-fill="samples"></div></div>
-    </section>
-
-    <!-- ============ MONTAGE (al posto della foto) ============ -->
-    <section class="portrait" id="montage" aria-label="Illustration: animated EEG scalp map">
-      <div class="portrait-frame">
-        <div class="frame-bar mono"><span>subject_001 · topomap</span><span>■ □ ×</span></div>
-        <canvas id="ascii" aria-hidden="true"></canvas>
-        <div class="frame-foot mono"><span id="ascii-status">loading…</span><span data-i18n="portrait.hover">hover or tap a channel</span></div>
-      </div>
+      <p class="hero-sub mono" data-i18n="hero.sub">MSc in Biomedical Engineering — Politecnico di Milano · graduated Oct 2026 · 110/110</p>
     </section>
 
     <!-- ============ ABOUT ============ -->
@@ -136,9 +126,9 @@
       <article class="about-card">
         <div class="card-label mono" data-i18n="nav.about">About</div>
         <div class="about-body">
-          <p data-i18n="about.p1">I'm a biomedical engineer working where signals meet learning. I did my bachelor's at the University of Cagliari and I'm finishing an MSc in Biomedical Engineering at Politecnico di Milano, on the bioinformatics track.</p>
+          <p data-i18n="about.p1">I'm a biomedical engineer working where signals meet learning. I did my bachelor's at the University of Cagliari and I graduated in October 2026 with an MSc in Biomedical Engineering (bioinformatics track) from Politecnico di Milano, with a final grade of 110/110.</p>
           <p data-i18n="about.p2">Most of my work starts from a noisy physiological recording — an EEG, a vital-sign stream, a pressure platform, an MRI volume — and ends with a model that has to make sense of it. I like owning the whole chain: defining the problem, cleaning the data, building and validating the model, and the moment a pipeline finally tells you something real.</p>
-          <p data-i18n="about.p3">Right now I'm writing my master's thesis on deep learning for EEG decoding. Outside the lab I've been an elected student representative since 2023, first in Cagliari and then at PoliMi, because I care about how universities work for the people inside them.</p>
+          <p data-i18n="about.p3">My master's thesis was on deep learning for EEG decoding. Outside the lab I've been an elected student representative since 2023, first in Cagliari and then at PoliMi, because I care about how universities work for the people inside them.</p>
         </div>
       </article>
     </section>
@@ -158,8 +148,8 @@
           <div class="ch-body">
             <p class="ch-meta mono">Python · PyTorch · PyG · MNE · Nov 2025 – Oct 2026</p>
             <h2 data-i18n="w.thesis.t">Imagined speech decoding with graph &amp; hypergraph neural networks</h2>
-            <p data-i18n="w.thesis.b">Master's thesis at Politecnico di Milano. Can we tell which word someone is silently thinking from their EEG? I design deep learning models that treat each recording as a graph of electrodes and learn end-to-end from the raw signal, with the long-term goal of a semantic “neural dictionary”.</p>
-            <p class="ch-note mono" data-i18n="w.thesis.n">// work in progress — details after the defence</p>
+            <p data-i18n="w.thesis.b">Master's thesis at Politecnico di Milano, completed for the MSc degree. Can we tell which word someone is silently thinking from their EEG? I design deep learning models that treat each recording as a graph of electrodes and learn end-to-end from the raw signal, with the long-term goal of a semantic “neural dictionary”.</p>
+            <p class="ch-note mono" data-i18n="w.thesis.n">// details will be shared after publication</p>
             <a class="ch-link ch-more mono" href="projects/thesis.html" data-goatcounter-click="more-thesis"><span data-i18n="w.more">Read more</span> →</a>
           </div>
         </article>
@@ -311,7 +301,7 @@
           </li>
           <li data-lane="edu" data-start="2024-09" data-end="2026-10" data-marker="04">
             <h3 data-i18n="path.msc.t">MSc Biomedical Engineering — Bioinformatics track</h3>
-            <p class="ev-meta mono" data-i18n="path.msc.d">Politecnico di Milano · Sept 2024 – Oct 2026 (expected)</p>
+            <p class="ev-meta mono" data-i18n="path.msc.d">Politecnico di Milano · Sept 2024 – Oct 2026 · graduated 21 Oct 2026 · 110/110</p>
             <p class="ev-desc" data-i18n="path.msc.x">Master's degree at Politecnico di Milano, bioinformatics track.</p>
           </li>
           <li data-lane="proj" data-start="2024-10" data-end="2025-01">
@@ -337,7 +327,7 @@
           <li data-lane="res" data-start="2025-11" data-end="2026-10" data-marker="06">
             <h3 data-i18n="path.thesis.t">Master's thesis — deep learning for EEG decoding</h3>
             <p class="ev-meta mono" data-i18n="path.thesis.d">Politecnico di Milano · Nov 2025 – Oct 2026</p>
-            <p class="ev-desc" data-i18n="path.thesis.x">Designing and training deep learning models that decode EEG signals end-to-end. Details after the defence.</p>
+            <p class="ev-desc" data-i18n="path.thesis.x">Designed and trained deep learning models that decode EEG signals end-to-end. Details after publication.</p>
           </li>
           <li data-lane="proj" data-start="2026-03" data-end="2026-06">
             <h3 data-i18n="path.icu.t">ICU mortality prediction</h3>
@@ -357,7 +347,7 @@
           <li data-lane="next" data-start="2026-11" data-end="2026-11" data-marker="07">
             <h3 data-i18n="path.next.t">Available</h3>
             <p class="ev-meta mono" data-i18n="path.next.d">From November 2026</p>
-            <p class="ev-desc" data-i18n="path.next.x">Open to new opportunities after graduation. <a href="#contact">Get in touch →</a></p>
+            <p class="ev-desc" data-i18n="path.next.x">Open to new opportunities now that I have graduated. <a href="#contact">Get in touch →</a></p>
           </li>
       </ol>
 
@@ -387,7 +377,7 @@
 
   <!-- statistiche anonime, senza cookie (GoatCounter) -->
   <script data-goatcounter="https://daniele-u22.goatcounter.com/count" async src="assets/js/count.js"></script>
-  <script defer src="i18n.js?v=202610031356"></script>
-  <script defer src="main.js?v=202610031356"></script>
+  <script defer src="i18n.js?v=202610251039"></script>
+  <script defer src="main.js?v=202610251039"></script>
 </body>
 </html>

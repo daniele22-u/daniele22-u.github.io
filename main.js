@@ -51,21 +51,6 @@
     onScroll();
   }
 
-  /* ---------- marquee ---------- */
-  const CHANNELS = ['Fp1','Fp2','AF3','AF4','F7','F3','Fz','F4','F8','FT7','FC3','FCz','FC4','FT8','T7','C3','Cz','C4','T8','TP7','CP3','CPz','CP4','TP8','P7','P3','Pz','P4','P8','PO7','PO3','POz','PO4','PO8','O1','Oz','O2'];
-  document.querySelectorAll('.marquee .track').forEach(track => {
-    let s = '';
-    if (track.dataset.fill === 'channels') {
-      s = CHANNELS.map(c => c.toUpperCase()).join(' · ') + ' · ';
-    } else {
-      for (let k = 0; k < 90; k++) {
-        const v = Math.random() * 120 - 60;
-        s += (v < 0 ? '−' : '+') + Math.abs(v).toFixed(2) + ' µV / ';
-      }
-    }
-    track.textContent = (s + s + s + s);
-  });
-
   /* ---------- orologio ---------- */
   const clock = document.getElementById('clock');
   const stamp = document.getElementById('stamp');
@@ -124,7 +109,7 @@
   /* ---------- HERO: tracciato EEG multicanale ---------- */
   const eeg = document.getElementById('eeg');
   if (eeg) {
-    const LABELS = ['Fp1','F3','F7','FC3','C3','T7','CP3','P3','P7','PO7','O1','Oz','O2','PO8','P8','P4','CP4','T8','C4','FC4','F8','F4','Fp2'];
+    const LABELS = ['Fp1','F3','C3','Pz','C4','F4','O2'];
     const sigs = LABELS.map((_, i) => makeChannel(i + 1));
     let S = fitCanvas(eeg);
     const mouse = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4 };
@@ -140,7 +125,7 @@
       mouse.x += (mouse.tx - mouse.x) * 0.12;
       mouse.y += (mouse.ty - mouse.y) * 0.12;
 
-      const n = w < 600 ? 14 : LABELS.length;
+      const n = w < 600 ? 5 : LABELS.length;
       const top = 24, bottom = 40;
       const gap = (h - top - bottom) / (n - 1);
       const left = w < 600 ? 44 : 64;
@@ -184,175 +169,6 @@
     };
     const redraw = animateWhenVisible(eeg, draw);
     window.addEventListener('resize', () => { S = fitCanvas(eeg); redraw(); });
-    themeListeners.push(redraw);
-  }
-
-  /* ---------- TOPOMAP: mappa di potenziale sullo scalpo, vista dall'alto ---------- */
-  const topo = document.getElementById('ascii');
-  const status = document.getElementById('ascii-status');
-  if (topo) {
-    // elettrodi 10-20, coordinate dall'alto: x destra, y nuca (naso in alto)
-    const EL = [
-      ['Fp1',-.31,-.95],['Fp2',.31,-.95],['F7',-.81,-.59],['F3',-.42,-.52],['Fz',0,-.5],['F4',.42,-.52],['F8',.81,-.59],
-      ['FC5',-.62,-.27],['FC1',-.2,-.25],['FC2',.2,-.25],['FC6',.62,-.27],
-      ['T7',-1,0],['C3',-.5,0],['Cz',0,0],['C4',.5,0],['T8',1,0],
-      ['CP5',-.62,.27],['CP1',-.2,.25],['CP2',.2,.25],['CP6',.62,.27],
-      ['P7',-.81,.59],['P3',-.42,.52],['Pz',0,.5],['P4',.42,.52],['P8',.81,.59],
-      ['O1',-.31,.95],['Oz',0,1],['O2',.31,.95]
-    ].map(([n, x, y], k) => ({ n, x, y, k }));
-    // sorgenti: dipoli che si spostano, ruotano e invertono polarità + un ritmo posteriore
-    const R4 = rng(1020);
-    const DIP = [0, 1, 2].map(() => ({
-      ax: .25 + R4() * .35, ay: .25 + R4() * .35, wx: .11 + R4() * .12, wy: .09 + R4() * .12,
-      px: R4() * 6.28, py: R4() * 6.28, wr: (.12 + R4() * .15) * (R4() < .5 ? -1 : 1), pr: R4() * 6.28,
-      wa: .35 + R4() * .3, pa: R4() * 6.28
-    }));
-    const S2 = 2 * .42 * .42;
-    const field = (x, y, t) => {
-      let v = 0;
-      for (const d of DIP) {
-        const cx = d.ax * Math.sin(d.wx * t + d.px), cy = d.ay * Math.sin(d.wy * t + d.py);
-        const th = d.wr * t + d.pr, ox = Math.cos(th) * .3, oy = Math.sin(th) * .3;
-        const a = Math.sin(d.wa * t + d.pa);
-        const p1 = (x - cx - ox) ** 2 + (y - cy - oy) ** 2, p2 = (x - cx + ox) ** 2 + (y - cy + oy) ** 2;
-        v += a * (Math.exp(-p1 / S2) - Math.exp(-p2 / S2));
-      }
-      v += .35 * Math.sin(.8 * t) * Math.exp(-(x * x + (y - .7) ** 2) / .5);
-      return v * .85;
-    };
-    // componente veloce (solo per il tracciato del canale selezionato)
-    const fast = (k, t) => .18 * Math.sin(6.2832 * (9.5 + k % 3 * .4) * t + k) * (.6 + .4 * Math.sin(.9 * t + k))
-      + .1 * Math.sin(6.2832 * 17 * t + k * 2.1) + .08 * Math.sin(6.2832 * 3.1 * t + k * .7);
-    const UV = 20;                       // ±1 del campo = ±20 µV
-    const G = 64, EXT = 1.16;            // griglia del campo, raggio della testa in unità elettrodo
-    const off = document.createElement('canvas'); off.width = off.height = G;
-    const octx = off.getContext('2d'), img = octx.createImageData(G, G), vals = new Float32Array(G * G);
-    const rgb = (c) => { const m = /^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i.exec(c || ''); return m ? [1, 2, 3].map(i => parseInt(m[i], 16)) : [124, 240, 197]; };
-    const LEVELS = [-.6, -.3, .3, .6];
-    let S = null, hover = null, auto = 0, nextAuto = 4;
-    const AUTO = ['Cz', 'Pz', 'Oz', 'C3', 'Fz', 'C4', 'P3', 'P4'].map(n => EL.findIndex(e => e.n === n));
-    let geom = null;
-    const pick = (e) => {
-      if (!geom) return;
-      const r = topo.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
-      let best = null, bd = 28 * 28;
-      for (const el of EL) {
-        const dx = geom.cx + el.x * geom.k - mx, dy = geom.cy + el.y * geom.k - my, d = dx * dx + dy * dy;
-        if (d < bd) { bd = d; best = el.k; }
-      }
-      hover = best;
-      redraw();
-    };
-    topo.addEventListener('pointermove', pick);
-    topo.addEventListener('pointerdown', pick);
-    topo.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hover = null; redraw(); } });
-
-    const draw = (t) => {
-      if (!S) S = fitCanvas(topo);
-      const { ctx, w, h } = S;
-      ctx.clearRect(0, 0, w, h);
-      const R = Math.min(w, h * .82) * .37, cx = w / 2, cy = h * .44, k = R / EXT;
-      geom = { cx, cy, k };
-      const pos = rgb(colors.accent), neg = rgb(colors.cold);
-
-      // campo sulla griglia
-      for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) {
-        const x = ((i + .5) / G * 2 - 1) * EXT, y = ((j + .5) / G * 2 - 1) * EXT;
-        const v = field(x, y, t), o = (j * G + i) * 4, c = v > 0 ? pos : neg, a = Math.min(1, Math.abs(v));
-        vals[j * G + i] = v;
-        img.data[o] = c[0]; img.data[o + 1] = c[1]; img.data[o + 2] = c[2];
-        img.data[o + 3] = x * x + y * y < EXT * EXT * 1.08 ? 235 * Math.pow(a, .85) : 0;
-      }
-      octx.putImageData(img, 0, 0);
-      ctx.save();
-      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832); ctx.clip();
-      ctx.imageSmoothingEnabled = true;
-      ctx.drawImage(off, cx - R, cy - R, 2 * R, 2 * R);
-      // curve di livello (marching squares)
-      ctx.strokeStyle = colors.fg; ctx.lineWidth = 1;
-      const cs = 2 * R / G;
-      for (const L of LEVELS) {
-        ctx.globalAlpha = .22;
-        ctx.setLineDash(L < 0 ? [3, 3] : []);
-        ctx.beginPath();
-        for (let j = 0; j < G - 1; j++) for (let i = 0; i < G - 1; i++) {
-          const a = vals[j * G + i] - L, b = vals[j * G + i + 1] - L, c = vals[(j + 1) * G + i + 1] - L, d = vals[(j + 1) * G + i] - L;
-          const pts = [];
-          if ((a > 0) !== (b > 0)) pts.push([i + a / (a - b), j]);
-          if ((b > 0) !== (c > 0)) pts.push([i + 1, j + b / (b - c)]);
-          if ((c > 0) !== (d > 0)) pts.push([i + 1 - c / (c - d), j + 1]);
-          if ((d > 0) !== (a > 0)) pts.push([i, j + 1 - d / (d - a)]);
-          for (let q = 0; q + 1 < pts.length; q += 2) {
-            ctx.moveTo(cx - R + (pts[q][0] + .5) * cs, cy - R + (pts[q][1] + .5) * cs);
-            ctx.lineTo(cx - R + (pts[q + 1][0] + .5) * cs, cy - R + (pts[q + 1][1] + .5) * cs);
-          }
-        }
-        ctx.stroke();
-      }
-      ctx.setLineDash([]);
-      ctx.restore();
-
-      // contorno della testa: cerchio, naso, orecchie
-      ctx.globalAlpha = .9; ctx.strokeStyle = colors.fg; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx - R * .12, cy - R * .993); ctx.lineTo(cx, cy - R * 1.13); ctx.lineTo(cx + R * .12, cy - R * .993);
-      for (const s of [-1, 1]) {
-        ctx.moveTo(cx + s * R * .995, cy - R * .16);
-        ctx.bezierCurveTo(cx + s * R * 1.1, cy - R * .2, cx + s * R * 1.12, cy + R * .18, cx + s * R * .99, cy + R * .16);
-      }
-      ctx.stroke();
-
-      // canale selezionato: hover, altrimenti giro automatico
-      if (t > nextAuto) { auto = (auto + 1) % AUTO.length; nextAuto = t + 4; }
-      const sel = EL[hover ?? AUTO[auto]];
-      // elettrodi
-      ctx.font = '9px "JetBrains Mono", monospace';
-      for (const el of EL) {
-        const X = cx + el.x * k, Y = cy + el.y * k, on = el === sel;
-        ctx.globalAlpha = on ? 1 : .75;
-        ctx.fillStyle = colors.fg;
-        ctx.beginPath(); ctx.arc(X, Y, on ? 3.5 : 2, 0, 6.2832); ctx.fill();
-        if (on) { ctx.strokeStyle = colors.fg; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(X, Y, 8, 0, 6.2832); ctx.stroke(); }
-        if (w > 380 || on) {
-          ctx.globalAlpha = on ? 1 : .45;
-          ctx.fillStyle = on ? colors.fg : colors['fg-dim'];
-          ctx.fillText(el.n.toUpperCase(), X + 5, Y - 5);
-        }
-      }
-
-      // barra dei colori
-      const bx = w - 26, by = cy - R * .5, bh = R;
-      for (let q = 0; q < bh; q++) {
-        const v = 1 - 2 * q / bh, c = v > 0 ? pos : neg;
-        ctx.globalAlpha = Math.pow(Math.abs(v), .85) * .92;
-        ctx.fillStyle = `rgb(${c[0]},${c[1]},${c[2]})`;
-        ctx.fillRect(bx, by + q, 6, 1);
-      }
-      ctx.globalAlpha = .7; ctx.strokeStyle = colors.line; ctx.strokeRect(bx - .5, by - .5, 7, bh + 1);
-      ctx.fillStyle = colors['fg-dim']; ctx.textAlign = 'right';
-      ctx.fillText(`+${UV}`, bx - 4, by + 8); ctx.fillText('0', bx - 4, by + bh / 2 + 3); ctx.fillText(`−${UV} µV`, bx - 4, by + bh);
-      ctx.textAlign = 'left';
-
-      // tracciato del canale selezionato (ultimi 3 s)
-      const ty = h * .905, th = h * .04, tx0 = 18, tx1 = w - 18;
-      ctx.globalAlpha = .5; ctx.strokeStyle = colors.line; ctx.beginPath(); ctx.moveTo(tx0, ty); ctx.lineTo(tx1, ty); ctx.stroke();
-      ctx.globalAlpha = 1; ctx.strokeStyle = colors.accent; ctx.lineWidth = 1.2; ctx.beginPath();
-      const N = Math.round(tx1 - tx0);
-      for (let q = 0; q <= N; q++) {
-        const tt = t - 3 + 3 * q / N, v = field(sel.x, sel.y, tt) + fast(sel.k, tt);
-        const Y = ty - v * th;
-        q ? ctx.lineTo(tx0 + q, Y) : ctx.moveTo(tx0, Y);
-      }
-      ctx.stroke();
-      ctx.fillStyle = colors['fg-dim']; ctx.globalAlpha = .9;
-      ctx.fillText(`${sel.n.toUpperCase()} · −3 s`, tx0, ty - th * 2.1);
-      ctx.globalAlpha = 1;
-      const val = field(sel.x, sel.y, t) * UV;
-      if (status) status.textContent = `${sel.n.toUpperCase()} · ${val >= 0 ? '+' : '−'}${Math.abs(val).toFixed(1)} µV`;
-    };
-    const redraw = animateWhenVisible(topo, draw);
-    window.addEventListener('resize', () => { S = null; redraw(); });
     themeListeners.push(redraw);
   }
 

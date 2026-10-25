@@ -37,8 +37,8 @@ PROJECTS = [
              "<p>Instead of hand-crafting features, I treat each EEG recording as a <strong>graph</strong>: electrodes are nodes, and the connections between them are computed from the signal of that specific trial. Graph neural networks, and <strong>hypergraph</strong> networks where a single connection can link many electrodes at once, then learn directly from the raw signal, end to end.</p><p>A large part of the work is methodological: evaluating models fairly across subjects and sessions, and understanding <em>why</em> a model works or fails, not only <em>whether</em> it does.</p>",
              "<p>Invece di progettare feature a mano, tratto ogni registrazione EEG come un <strong>grafo</strong>: gli elettrodi sono i nodi e le connessioni tra loro sono calcolate dal segnale di quel singolo trial. Reti neurali su grafi, e su <strong>ipergrafi</strong> in cui una connessione può unire più elettrodi insieme, imparano poi direttamente dal segnale grezzo, end to end.</p><p>Una parte importante del lavoro è metodologica: valutare i modelli in modo corretto tra soggetti e sessioni, e capire <em>perché</em> un modello funziona o fallisce, non solo <em>se</em> funziona.</p>"),
             ("Status", "Stato",
-             "<p>Work in progress. Details and results will be shared after the defence.</p>",
-             "<p>Lavoro in corso. Dettagli e risultati saranno condivisi dopo la discussione.</p>"),
+             "<p>Completed for the MSc degree (110/110). Details and results will be shared after publication.</p>",
+             "<p>Concluso con la laurea magistrale (110/110). Dettagli e risultati saranno condivisi dopo la pubblicazione.</p>"),
         ],
     ),
     dict(
